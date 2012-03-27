@@ -2,11 +2,12 @@
 purl - A simple Python URL class
 ================================
 
-
 Install
 -------
 
-Still a work-in-progress - not on PyPi yet.
+Still a work-in-progress - not on PyPi yet::
+
+    pip install git+git://github.com/codeinthehole/purl.git#egg=purl
 
 Use
 ---
@@ -38,7 +39,7 @@ Interrogate::
     u.query_param('q')  # 'testing'
     u.query_param('lang', default='GB')  # 'GB'
 
-That that each accessor method is overloaded to be a mutator method too,
+Note that each accessor method is overloaded to be a mutator method too,
 mimicing the jQuery API.  Eg::
 
     u = URL.from_string('https://github.com/codeinthehole')
@@ -48,3 +49,10 @@ mimicing the jQuery API.  Eg::
 
     # Mutate
     u.path_segment(0, 'tangentlabs') # returns new URL object
+
+Contribute
+----------
+
+Run tests with nose::
+
+    nosetests
