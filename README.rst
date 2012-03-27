@@ -2,12 +2,16 @@
 purl - A simple Python URL class
 ================================
 
+
+Install
+-------
+
 Still a work-in-progress - not on PyPi yet.
 
-Usage
------
+Use
+---
 
-Construct:
+Construct::
 
     from purl import URL
 
