@@ -6,7 +6,7 @@ PORT_HTTP = 80
 
 class URL(object):
 
-    def __init__(self, host, scheme='http', port=PORT_HTTP, path='/',
+    def __init__(self, host=None, scheme='http', port=PORT_HTTP, path='/',
                  query=None, fragment=None):
         self._host = host
         self._scheme = scheme
@@ -23,6 +23,8 @@ class URL(object):
                  self._path,
                  u'?%s' % self._query if self._query else '',
                  u'#%s' % self._fragment if self._fragment else '']
+        if self._host is None:
+            return ''.join(parts[2:])
         return ''.join(parts)
 
     __str__ = __unicode__

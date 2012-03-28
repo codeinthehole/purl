@@ -17,6 +17,10 @@ class ConstructorTests(TestCase):
         u = URL(host='localhost', port=8000)
         self.assertEqual('http://localhost:8000/', str(u))
 
+    def test_no_args_to_constructor(self):
+        u = URL()
+        self.assertEqual('/', str(u))
+
 
 class MoreFactoryTests(TestCase):
 
@@ -118,6 +122,10 @@ class NoTrailingSlashTests(TestCase):
 
 
 class BuilderTests(TestCase):
+    
+    def test_build_relative_url(self):
+        url = URL().path('searching')
+        self.assertEqual('/searching', str(url))
 
     def test_set_fragment(self):
         url = URL.from_string('http://www.google.com/').fragment('hello')
