@@ -61,6 +61,9 @@ class SimpleExtractionTests(TestCase):
     def setUp(self):
         self.url = URL.from_string('http://www.google.com/blog/article/1?q=testing') 
 
+    def test_netloc(self):
+        self.assertEqual('www.google.com:80', self.url.netloc())
+
     def test_path_extraction(self):
         self.assertEqual('1', self.url.path_segment(2))
 
@@ -166,3 +169,7 @@ class BuilderTests(TestCase):
     def test_set_subdomain(self):
         url = URL.from_string('http://www.google.com/search').subdomain(0, 'www2')
         self.assertEqual('www2', url.subdomain(0))
+
+    def test_set_subdomains(self):
+        url = URL().subdomains(['www', 'google', 'com'])
+        self.assertEqual('http://www.google.com/', str(url))

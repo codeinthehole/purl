@@ -33,6 +33,9 @@ class URL(object):
     # These use the jQuery overloading style whereby they become mutators if
     # extra args are passed
 
+    def netloc(self):
+        return u'%s:%s' % (self.host(), self.port())
+
     def host(self, value=None):
         if value:
             return URL._mutate(self, host=value)
@@ -40,7 +43,9 @@ class URL(object):
 
     domain = host
 
-    def subdomains(self):
+    def subdomains(self, value=None):
+        if value is not None:
+            return URL._mutate(self, host='.'.join(value))
         return self.host().split('.')
 
     def subdomain(self, index, value=None):
