@@ -88,6 +88,9 @@ class SimpleExtractionTests(TestCase):
     def test_query(self):
         self.assertEqual('q=testing', self.url.query())
 
+    def test_query_params(self):
+        self.assertEqual({'q': ['testing']}, self.url.query_params())
+
     def test_path_extraction_returns_none_if_index_too_large(self):
         self.assertIsNone(self.url.path_segment(14))
 
@@ -146,6 +149,10 @@ class BuilderTests(TestCase):
 
     def test_set_query_param(self):
         url = URL.from_string('http://www.google.com/search').query_param('q', 'testing')
+        self.assertEqual('testing', url.query_param('q'))
+
+    def test_set_query_params(self):
+        url = URL.from_string('http://www.google.com/search').query_params({'q': 'testing'})
         self.assertEqual('testing', url.query_param('q'))
 
     def test_set_subdomain(self):

@@ -104,7 +104,7 @@ class URL(object):
         """
         Return a query parameter for the given key
         """
-        parse_result = urlparse.parse_qs(self._query)
+        parse_result = self.query_params()
         if value is not None:
             parse_result[key] = value
             return URL._mutate(self, query=urllib.urlencode(parse_result))
@@ -113,6 +113,11 @@ class URL(object):
         except KeyError:
             return default
         return result[0] if len(result) == 1 else result
+
+    def query_params(self, value=None):
+        if value is not None:
+            return URL._mutate(self, query=urllib.urlencode(value))
+        return urlparse.parse_qs(self._query)
 
     @classmethod
     def _mutate(cls, url, **kwargs):
