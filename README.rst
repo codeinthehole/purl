@@ -2,10 +2,14 @@
 purl - A simple Python URL class
 ================================
 
+A simple, immutable URL class with a clean API for interrogation and
+manipulation.
+
 Install
 -------
 
-Still a work-in-progress - not on PyPi yet::
+Still a work-in-progress - not on PyPi yet, but you can install directly from
+Github::
 
     pip install git+git://github.com/codeinthehole/purl.git#egg=purl
 
@@ -28,31 +32,43 @@ Construct::
 
 Interrogate::
 
-    u.scheme()  # 'https'
-    u.host()    # 'www.google.com' 
-    u.port()    # 80
-    u.path()    # '/search'
-    u.query()   # 'q=testing'
+    u.scheme()      # 'https'
+    u.host()        # 'www.google.com' 
+    u.domain()      # 'www.google.com' - alias of host
+    u.port()        # 80
+    u.path()        # '/search'
+    u.query()       # 'q=testing'
+    u.fragment()    # 'q=testing'
 
     u.path_segment(0)   # 'search'
     u.path_segments()   # ('search',)
     u.query_param('q')  # 'testing'
     u.query_param('lang', default='GB')  # 'GB'
+    u.query_params()    # {'q': 'testing'}
 
-Note that each accessor method is overloaded to be a mutator method too,
-mimicing the jQuery API.  Eg::
+    u.subdmains()   # ['www', 'google', 'com']
+    u.subdmain(0)   # 'www'
+
+Note that each accessor method is overloaded to be a mutator method too, similar
+to the jQuery API.  Eg::
 
     u = URL.from_string('https://github.com/codeinthehole')
 
     # Access
     u.path_segment(0) # returns 'codeinthehole'
 
-    # Mutate
-    u.path_segment(0, 'tangentlabs') # returns new URL object
+    # Mutate (creates a new instance)
+    new_url = u.path_segment(0, 'tangentlabs') # returns new URL object
 
 Contribute
 ----------
 
-Run tests with nose::
+Clone and install testing dependencies::
+
+    pip install -r testing-requirements.txt
+
+Ensure tests pass::
 
     nosetests
+
+Hack away
