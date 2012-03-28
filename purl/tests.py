@@ -69,6 +69,19 @@ class SimpleExtractionTests(TestCase):
     def test_host(self):
         self.assertEqual('www.google.com', self.url.host())
 
+    def test_domain(self):
+        self.assertEqual('www.google.com', self.url.domain())
+
+    def test_subdomains(self):
+        self.assertEqual(['www', 'google', 'com'], self.url.subdomains())
+
+    def test_subdomain(self):
+        self.assertEqual('www', self.url.subdomain(0))
+
+    def test_invalid_subdomain_raises_indexerror(self):
+        with self.assertRaises(IndexError):
+            self.url.subdomain(10)
+
     def test_path(self):
         self.assertEqual('/blog/article/1', self.url.path())
 
@@ -134,3 +147,7 @@ class BuilderTests(TestCase):
     def test_set_query_param(self):
         url = URL.from_string('http://www.google.com/search').query_param('q', 'testing')
         self.assertEqual('testing', url.query_param('q'))
+
+    def test_set_subdomain(self):
+        url = URL.from_string('http://www.google.com/search').subdomain(0, 'www2')
+        self.assertEqual('www2', url.subdomain(0))

@@ -27,12 +27,26 @@ class URL(object):
 
     __str__ = __unicode__
 
-    # Getters/setters
+    # Accessors / Mutators
+    # These use the jQuery overloading style whereby they become mutators if
+    # extra args are passed
 
     def host(self, value=None):
         if value:
             return URL._mutate(self, host=value)
         return self._host
+
+    domain = host
+
+    def subdomains(self):
+        return self.host().split('.')
+
+    def subdomain(self, index, value=None):
+        if value is not None:
+            subdomains = self.subdomains()
+            subdomains[index] = value
+            return URL._mutate(self, host='.'.join(subdomains))
+        return self.subdomains()[index]
 
     def scheme(self, value=None):
         if value:
