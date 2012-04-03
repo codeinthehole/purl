@@ -6,9 +6,11 @@ PORT_HTTP = 80
 
 class URL(object):
 
-    def __init__(self, host=None, scheme='http', port=PORT_HTTP, path='/',
+    def __init__(self, host=None, username=None, password=None, scheme='http', port=PORT_HTTP, path='/',
                  query=None, fragment=None):
         self._host = host
+        self._username = username
+        self._password = password
         self._scheme = scheme
         self._path = path
         self._query = query
@@ -42,6 +44,12 @@ class URL(object):
         return self._host
 
     domain = host
+
+    def username(self):
+        return self._username
+
+    def password(self):
+        return self._password
 
     def subdomains(self, value=None):
         if value is not None:
@@ -149,7 +157,17 @@ class URL(object):
         Factory method to create a new instance based on a passed string
         """
         result = urlparse.urlparse(url_str)
-        return cls(host=result.netloc,
+        netloc_parts = result.netloc.split('@')
+        if len(netloc_parts) == 1:
+            username = password = None
+            host = netloc_parts[0]
+        else:
+            username, password = netloc_parts[0].split(':')
+            host = netloc_parts[1]
+
+        return cls(host=host,
+                   username=username,
+                   password=password,
                    scheme=result.scheme,
                    port=result.port,
                    path=result.path,

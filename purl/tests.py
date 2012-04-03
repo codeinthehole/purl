@@ -66,6 +66,11 @@ class EdgeCaseExtractionTests(TestCase):
         url = URL.from_string('http://www.google.com/?q=1&q=2&q=3') 
         self.assertEqual(['1', '2', '3'], url.query_param('q'))
 
+    def test_username_extraction(self):
+        url = URL.from_string('ftp://user:pw@ftp.host') 
+        self.assertEqual('user', url.username())
+        self.assertEqual('pw', url.password())
+
 
 class SimpleExtractionTests(TestCase):
 
