@@ -56,10 +56,24 @@ class FactoryTests(TestCase):
         self.assertEqual(self.url_str, str(self.url))
 
 
+class EdgeCaseExtractionTests(TestCase):
+
+    def test_no_equals_sign_means_empty_string(self):
+        url = URL.from_string('http://www.google.com/blog/article/1?q') 
+        self.assertEqual('', url.query_param('q'))
+
+    def test_list_extraction(self):
+        url = URL.from_string('http://www.google.com/?q=1&q=2&q=3') 
+        self.assertEqual(['1', '2', '3'], url.query_param('q'))
+
+
 class SimpleExtractionTests(TestCase):
 
     def setUp(self):
         self.url = URL.from_string('http://www.google.com/blog/article/1?q=testing') 
+
+    def test_has_actual_param(self):
+        self.assertTrue(self.url.has_query_param('q'))
 
     def test_netloc(self):
         self.assertEqual('www.google.com:80', self.url.netloc())
@@ -94,6 +108,9 @@ class SimpleExtractionTests(TestCase):
 
     def test_query(self):
         self.assertEqual('q=testing', self.url.query())
+
+    def test_query_param_as_list(self):
+        self.assertEqual(['testing'], self.url.query_param('q', as_list=True))
 
     def test_query_params(self):
         self.assertEqual({'q': ['testing']}, self.url.query_params())

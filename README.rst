@@ -30,6 +30,8 @@ Construct::
     u = URL.from_string('http://www.google.com').path('search') \
                                                 .query_param('q', 'testing')
 
+URL objects are immutable - all mutator methods return a new instance.
+
 Interrogate::
 
     u.scheme()      # 'https'
@@ -43,6 +45,7 @@ Interrogate::
     u.path_segment(0)   # 'search'
     u.path_segments()   # ('search',)
     u.query_param('q')  # 'testing'
+    u.query_param('q', as_list=True)  # ['testing']
     u.query_param('lang', default='GB')  # 'GB'
     u.query_params()    # {'q': 'testing'}
 
@@ -72,3 +75,4 @@ Ensure tests pass::
     nosetests
 
 Hack away
+
