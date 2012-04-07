@@ -1,12 +1,11 @@
 import urlparse
 import urllib
 
-PORT_HTTP = 80
-
 
 class URL(object):
 
-    def __init__(self, host=None, username=None, password=None, scheme='http', port=PORT_HTTP, path='/',
+    def __init__(self, host=None, username=None, password=None, scheme='http',
+                 port=None, path='/',
                  query=None, fragment=None):
         self._host = host
         self._username = username
@@ -14,20 +13,18 @@ class URL(object):
         self._scheme = scheme
         self._path = path
         self._query = query
-        if port is None:
-            port = PORT_HTTP
         self._port = port
         self._fragment = fragment
 
     def __unicode__(self):
-        parts = [u'%s://%s' % (self._scheme, self._host),
-                 u':%s' % self._port if self._port != PORT_HTTP else '',
+        parts = ["%s://" % self._scheme if self._scheme else u'',
+                 self.netloc(),
                  self._path,
-                 u'?%s' % self._query if self._query else '',
-                 u'#%s' % self._fragment if self._fragment else '']
+                 u'?%s' % self._query if self._query else u'',
+                 u'#%s' % self._fragment if self._fragment else u'']
         if self._host is None:
-            return ''.join(parts[2:])
-        return ''.join(parts)
+            return u''.join(parts[2:])
+        return u''.join(parts)
 
     __str__ = __unicode__
 
@@ -36,7 +33,13 @@ class URL(object):
     # extra args are passed
 
     def netloc(self):
-        return u'%s:%s' % (self.host(), self.port())
+        if self._username and self._password:
+            netloc = u'%s:%s@%s' % (self._username, self._password, self._host)
+        else:
+            netloc = self._host
+        if self._port:
+            netloc = u'%s:%s' % (netloc, self._port)
+        return netloc
 
     def host(self, value=None):
         if value:

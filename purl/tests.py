@@ -71,6 +71,15 @@ class EdgeCaseExtractionTests(TestCase):
         self.assertEqual('user', url.username())
         self.assertEqual('pw', url.password())
 
+    def test_username_in_unicode_repr(self):
+        u = 'ftp://user:pw@ftp.host'
+        url = URL.from_string(u) 
+        self.assertEqual(u, str(url))
+
+    def test_auth_in_netloc(self):
+        url = URL.from_string('ftp://user:pw@ftp.host') 
+        self.assertEqual('user:pw@ftp.host', url.netloc())
+
 
 class SimpleExtractionTests(TestCase):
 
@@ -81,13 +90,13 @@ class SimpleExtractionTests(TestCase):
         self.assertTrue(self.url.has_query_param('q'))
 
     def test_netloc(self):
-        self.assertEqual('www.google.com:80', self.url.netloc())
+        self.assertEqual('www.google.com', self.url.netloc())
 
     def test_path_extraction(self):
         self.assertEqual('1', self.url.path_segment(2))
 
-    def test_port(self):
-        self.assertEqual(80, self.url.port())
+    def test_port_defaults_to_none(self):
+        self.assertIsNone(self.url.port())
 
     def test_scheme(self):
         self.assertEqual('http', self.url.scheme())
