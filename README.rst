@@ -5,6 +5,8 @@ purl - A simple Python URL class
 A simple, immutable URL class with a clean API for interrogation and
 manipulation.
 
+.. image:: https://secure.travis-ci.org/codeinthehole/purl.png
+
 Install
 -------
 
