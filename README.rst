@@ -68,7 +68,7 @@ Contribute
 
 Clone and install testing dependencies::
 
-    pip install -r testing-requirements.txt
+    pip install -r requirements.txt
 
 Ensure tests pass::
 
