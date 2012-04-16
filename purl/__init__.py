@@ -121,6 +121,9 @@ class URL(object):
     def has_query_param(self, key):
         return self.query_param(key) is not None
 
+    def has_query_params(self, keys):
+        return all([self.has_query_param(k) for k in keys])
+
     def query_param(self, key, value=None, default=None, as_list=False):
         """
         Return a query parameter for the given key

@@ -89,6 +89,12 @@ class SimpleExtractionTests(TestCase):
     def test_has_actual_param(self):
         self.assertTrue(self.url.has_query_param('q'))
 
+    def test_has_query_params(self):
+        self.assertTrue(self.url.has_query_params(['q']))
+
+    def test_has_query_params_negative(self):
+        self.assertFalse(self.url.has_query_params(['q', 'r']))
+
     def test_netloc(self):
         self.assertEqual('www.google.com', self.url.netloc())
 
