@@ -132,7 +132,6 @@ class URL(object):
         if value is not None:
             parse_result[key] = value
             return URL._mutate(self, query=urllib.urlencode(parse_result))
-        print parse_result
         try:
             result = parse_result[key]
         except KeyError:
