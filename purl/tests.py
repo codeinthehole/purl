@@ -167,6 +167,9 @@ class BuilderTests(TestCase):
         url = URL().path('searching')
         self.assertEqual('/searching', str(url))
 
+    def test_build_relative_url_with_params(self):
+        url = URL().path('/searching').query_param('q', 'testing')
+
     def test_set_fragment(self):
         url = URL.from_string('http://www.google.com/').fragment('hello')
         self.assertEqual('hello', url.fragment())

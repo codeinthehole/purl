@@ -143,7 +143,8 @@ class URL(object):
     def query_params(self, value=None):
         if value is not None:
             return URL._mutate(self, query=urllib.urlencode(value))
-        return urlparse.parse_qs(self._query, True)
+        query = '' if self._query is None else self._query
+        return urlparse.parse_qs(query, True)
 
     @classmethod
     def _mutate(cls, url, **kwargs):
