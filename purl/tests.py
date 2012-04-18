@@ -21,6 +21,9 @@ class ConstructorTests(TestCase):
         u = URL()
         self.assertEqual('/', str(u))
 
+    def test_as_string(self):
+        self.assertEqual('/', URL().as_string())
+
 
 class MoreFactoryTests(TestCase):
 

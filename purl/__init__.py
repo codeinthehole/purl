@@ -26,7 +26,7 @@ class URL(object):
             return u''.join(parts[2:])
         return u''.join(parts)
 
-    __str__ = __unicode__
+    __str__ = as_string = __unicode__
 
     # Accessors / Mutators
     # These use the jQuery overloading style whereby they become mutators if
