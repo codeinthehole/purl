@@ -109,10 +109,11 @@ class URL(object):
         except IndexError:
             return default
 
-    def path_segments(self):
+    def path_segments(self, value=None):
+        if value is not None:
+            new_path = '/' + '/'.join(value)
+            return URL._mutate(self,  path=new_path)
         parts = self._path.split('/')
-        if len(parts) <= 2:
-            return default
         segments = parts[1:]
         if self._path.endswith('/'):
             segments.pop()
