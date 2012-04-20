@@ -74,6 +74,16 @@ Couple of other things:
 * It can be picked and restored
 * It supports equality operations
 
+Changelog
+---------
+
+v0.3
+~~~~
+
+* Added support for comparison and equality
+* Added support for pickling
+* Added __slots__ so instances can be used as keys within dictionaries
+
 Contribute
 ----------
 
