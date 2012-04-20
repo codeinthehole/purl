@@ -1,28 +1,46 @@
 import urlparse
 import urllib
+from collections import namedtuple
+
+# To minimise memory consumption, we use a namedtuple to store all instance
+# variables, as well as using the __slots__ attribute.
+_URLTuple = namedtuple("URLTuple", "host username password scheme port path query fragment")
 
 
 class URL(object):
 
+    __slots__ = ("_tuple",)
+
     def __init__(self, host=None, username=None, password=None, scheme='http',
-                 port=None, path='/',
-                 query=None, fragment=None):
-        self._host = host
-        self._username = username
-        self._password = password
-        self._scheme = scheme
-        self._path = path
-        self._query = query
-        self._port = port
-        self._fragment = fragment
+                 port=None, path='/', query=None, fragment=None):
+        self._tuple = _URLTuple(host, username, password, scheme, port, path, query, fragment)
+
+    def __eq__(self, other):
+        return self._tuple == other._tuple
+
+    def __ne__(self, other):
+        return self._tuple != other._tuple
+
+    def __getstate__(self):
+        return tuple(self._tuple)
+
+    def __setstate__(self, state):
+        self._tuple = _URLTuple(*state)
+
+    def __hash__(self):
+        return hash(self._tuple)
+
+    def __repr__(self):
+        return str(self._tuple)
 
     def __unicode__(self):
-        parts = ["%s://" % self._scheme if self._scheme else u'',
+        url = self._tuple
+        parts = ["%s://" % url.scheme if url.scheme else u'',
                  self.netloc(),
-                 self._path,
-                 u'?%s' % self._query if self._query else u'',
-                 u'#%s' % self._fragment if self._fragment else u'']
-        if self._host is None:
+                 url.path,
+                 u'?%s' % url.query if url.query else u'',
+                 u'#%s' % url.fragment if url.fragment else u'']
+        if url.host is None:
             return u''.join(parts[2:])
         return u''.join(parts)
 
@@ -33,26 +51,27 @@ class URL(object):
     # extra args are passed
 
     def netloc(self):
-        if self._username and self._password:
-            netloc = u'%s:%s@%s' % (self._username, self._password, self._host)
+        url = self._tuple
+        if url.username and url.password:
+            netloc = u'%s:%s@%s' % (url.username, url.password, url.host)
         else:
-            netloc = self._host
-        if self._port:
-            netloc = u'%s:%s' % (netloc, self._port)
+            netloc = url.host
+        if url.port:
+            netloc = u'%s:%s' % (netloc, url.port)
         return netloc
 
     def host(self, value=None):
         if value:
             return URL._mutate(self, host=value)
-        return self._host
+        return self._tuple.host
 
     domain = host
 
     def username(self):
-        return self._username
+        return self._tuple.username
 
     def password(self):
-        return self._password
+        return self._tuple.password
 
     def subdomains(self, value=None):
         if value is not None:
@@ -69,29 +88,29 @@ class URL(object):
     def scheme(self, value=None):
         if value:
             return URL._mutate(self, scheme=value)
-        return self._scheme
+        return self._tuple.scheme
 
     def path(self, value=None):
         if value:
             if not value.startswith('/'):
                 value = '/' + value
             return URL._mutate(self, path=value)
-        return self._path
+        return self._tuple.path
 
     def query(self, value=None):
         if value:
             return URL._mutate(self, query=value)
-        return self._query
+        return self._tuple.query
 
     def port(self, value=None):
         if value:
             return URL._mutate(self, port=value)
-        return self._port
+        return self._tuple.port
 
     def fragment(self, value=None):
         if value:
             return URL._mutate(self, fragment=value)
-        return self._fragment
+        return self._tuple.fragment
 
     def path_segment(self, index, value=None, default=None):
         """
@@ -101,7 +120,7 @@ class URL(object):
             segments = list(self.path_segments())
             segments[index] = value
             new_path = '/' + '/'.join(segments)
-            if self._path.endswith('/'):
+            if self._tuple.path.endswith('/'):
                 new_path += '/'
             return URL._mutate(self, path=new_path)
         try:
@@ -113,9 +132,9 @@ class URL(object):
         if value is not None:
             new_path = '/' + '/'.join(value)
             return URL._mutate(self,  path=new_path)
-        parts = self._path.split('/')
+        parts = self._tuple.path.split('/')
         segments = parts[1:]
-        if self._path.endswith('/'):
+        if self._tuple.path.endswith('/'):
             segments.pop()
         return tuple(segments)
 
@@ -144,17 +163,12 @@ class URL(object):
     def query_params(self, value=None):
         if value is not None:
             return URL._mutate(self, query=urllib.urlencode(value))
-        query = '' if self._query is None else self._query
+        query = '' if self._tuple.query is None else self._tuple.query
         return urlparse.parse_qs(query, True)
 
     @classmethod
     def _mutate(cls, url, **kwargs):
-        args = {'host': url.host(),
-                'scheme': url.scheme(),
-                'port': url.port(),
-                'path': url.path(),
-                'query': url.query(),
-                'fragment': url.fragment()}
+        args = url._tuple._asdict()
         args.update(kwargs)
         return cls(**args)
 

@@ -68,6 +68,12 @@ to the jQuery API.  Eg::
     # Mutate (creates a new instance)
     new_url = u.path_segment(0, 'tangentlabs') # returns new URL object
 
+Couple of other things:
+
+* Since the URL class is immutable it can be used as a key in a dictionary
+* It can be picked and restored
+* It supports equality operations
+
 Contribute
 ----------
 

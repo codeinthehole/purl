@@ -1,4 +1,5 @@
 from unittest import TestCase
+import pickle
 
 from purl import URL
 
@@ -86,7 +87,6 @@ class EdgeCaseExtractionTests(TestCase):
     def test_port_for_https_url(self):
         url = URL.from_string('https://github.com') 
         self.assertEqual(None, url.port())
-
 
 
 class SimpleExtractionTests(TestCase):
@@ -225,3 +225,32 @@ class BuilderTests(TestCase):
     def test_set_subdomains(self):
         url = URL().subdomains(['www', 'google', 'com'])
         self.assertEqual('http://www.google.com/', str(url))
+
+
+class MiscTests(TestCase):
+
+    def test_url_can_be_used_as_key_in_dict(self):
+        u = URL.from_string('http://google.com')
+        {u: 0}
+
+    def test_equality_comparison(self):
+        self.assertEqual(URL.from_string('http://google.com'),
+                         URL.from_string('http://google.com'))
+
+    def test_negative_equality_comparison(self):
+        self.assertNotEqual(URL.from_string('http://google.com'),
+                            URL.from_string('https://google.com'))
+
+    def test_urls_are_hashable(self):
+        u = URL.from_string('http://google.com')
+        hash(u)
+
+    def test_urls_can_be_pickled(self):
+        u = URL.from_string('http://google.com')
+        pickle.dumps(u)
+
+    def test_urls_can_be_pickled_and_restored(self):
+        u = URL.from_string('http://google.com')
+        pickled = pickle.dumps(u)
+        v = pickle.loads(pickled)
+        self.assertEqual(u, v)
