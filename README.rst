@@ -10,8 +10,11 @@ manipulation.
 Install
 -------
 
-Still a work-in-progress - not on PyPi yet, but you can install directly from
-Github::
+From PyPI (stable)::
+
+    pip install purl
+
+From Github (unstable)::
 
     pip install git+git://github.com/codeinthehole/purl.git#egg=purl
 
