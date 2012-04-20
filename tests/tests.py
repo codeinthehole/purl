@@ -83,6 +83,11 @@ class EdgeCaseExtractionTests(TestCase):
         url = URL.from_string('ftp://user:pw@ftp.host') 
         self.assertEqual('user:pw@ftp.host', url.netloc())
 
+    def test_port_for_https_url(self):
+        url = URL.from_string('https://github.com') 
+        self.assertEqual(None, url.port())
+
+
 
 class SimpleExtractionTests(TestCase):
 

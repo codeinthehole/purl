@@ -42,7 +42,7 @@ Interrogate::
     u.scheme()      # 'https'
     u.host()        # 'www.google.com' 
     u.domain()      # 'www.google.com' - alias of host
-    u.port()        # 80
+    u.port()        # None - only returns value if explicitly set
     u.path()        # '/search'
     u.query()       # 'q=testing'
     u.fragment()    # 'q=testing'
