@@ -75,6 +75,11 @@ Couple of other things:
 Changelog
 ---------
 
+v0.3.1
+~~~~~~
+
+* Fixed bug with passing lists to query param setter methods
+
 v0.3
 ~~~~
 
