@@ -151,7 +151,8 @@ class URL(object):
         parse_result = self.query_params()
         if value is not None:
             parse_result[key] = value
-            return URL._mutate(self, query=urllib.urlencode(parse_result))
+            return URL._mutate(self, query=urllib.urlencode(parse_result,
+                                                            doseq=True))
         try:
             result = parse_result[key]
         except KeyError:
@@ -162,7 +163,7 @@ class URL(object):
 
     def query_params(self, value=None):
         if value is not None:
-            return URL._mutate(self, query=urllib.urlencode(value))
+            return URL._mutate(self, query=urllib.urlencode(value, doseq=True))
         query = '' if self._tuple.query is None else self._tuple.query
         return urlparse.parse_qs(query, True)
 

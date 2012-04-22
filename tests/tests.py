@@ -170,6 +170,19 @@ class NoTrailingSlashTests(TestCase):
 
 
 class BuilderTests(TestCase):
+
+    def test_setting_list_as_query_params(self):
+        first = URL.from_string('?q=testing')
+        second = URL().query_params(first.query_params())
+        self.assertEqual(first.query(), second.query())
+
+    def test_setting_single_item_list_as_query_param(self):
+        url = URL().query_param('q', ['testing'])
+        self.assertEqual('testing', url.query_param('q'))
+
+    def test_setting_list_as_query_param(self):
+        url = URL().query_param('q', ['testing', 'eggs'])
+        self.assertEqual(['testing', 'eggs'], url.query_param('q', as_list=True))
     
     def test_build_relative_url(self):
         url = URL().path('searching')
