@@ -4,7 +4,7 @@ from collections import namedtuple
 
 # To minimise memory consumption, we use a namedtuple to store all instance
 # variables, as well as using the __slots__ attribute.
-_URLTuple = namedtuple("URLTuple", "host username password scheme port path query fragment")
+_URLTuple = namedtuple("_URLTuple", "host username password scheme port path query fragment")
 
 
 class URL(object):
