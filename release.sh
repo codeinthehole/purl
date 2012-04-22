@@ -1,5 +1,7 @@
 #!/bin/bash
+# Cut a release to PyPi and update Github with tag.
 
+# Pluck release number out of setup.py
 RELEASE_NUM=`grep version setup.py | cut -d\' -f2`
 git tag | grep $RELEASE_NUM > /dev/null && \
 	echo "New version number required ($RELEASE_NUM already used)" && exit 1
