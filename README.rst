@@ -5,8 +5,6 @@ purl - A simple Python URL class
 A simple, immutable URL class with a clean API for interrogation and
 manipulation.
 
-.. image:: https://secure.travis-ci.org/codeinthehole/purl.png
-
 Install
 -------
 
@@ -54,8 +52,8 @@ Interrogate::
     u.query_param('lang', default='GB')  # 'GB'
     u.query_params()    # {'q': 'testing'}
 
-    u.subdmains()   # ['www', 'google', 'com']
-    u.subdmain(0)   # 'www'
+    u.subdomains()   # ['www', 'google', 'com']
+    u.subdomain(0)   # 'www'
 
 Note that each accessor method is overloaded to be a mutator method too, similar
 to the jQuery API.  Eg::
@@ -96,4 +94,9 @@ Ensure tests pass::
     nosetests
 
 Hack away
+
+Build status
+------------
+
+.. image:: https://secure.travis-ci.org/codeinthehole/purl.png
 
