@@ -1,6 +1,10 @@
 #!/bin/bash
 # Cut a release to PyPi and update Github with tag.
 
+# Ensure there are no uncomitted changes
+git diff --quiet HEAD
+[ $? -ne 0 ] && echo "Uncommitted changes!" && exit 1
+
 # Pluck release number out of setup.py
 RELEASE_NUM=`grep version setup.py | cut -d\' -f2`
 git tag | grep $RELEASE_NUM > /dev/null && \
