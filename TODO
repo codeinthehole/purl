@@ -1,2 +1,4 @@
 Rework constructor to take string
 query method?
+maybe rethink the jquery style
+clone method
