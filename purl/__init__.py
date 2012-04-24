@@ -187,6 +187,9 @@ class URL(object):
             username, password = netloc_parts[0].split(':')
             host = netloc_parts[1]
 
+        if host and ':' in host:
+            host = host.split(':')[0]
+
         return cls(host=host,
                    username=username,
                    password=password,
