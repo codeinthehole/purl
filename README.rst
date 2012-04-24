@@ -75,6 +75,11 @@ Couple of other things:
 Changelog
 ---------
 
+v0.3.2
+~~~~~~
+
+* Fixed bug port number in string when using from_string constructor
+
 v0.3.1
 ~~~~~~
 
