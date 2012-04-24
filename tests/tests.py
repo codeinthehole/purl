@@ -84,6 +84,11 @@ class EdgeCaseExtractionTests(TestCase):
         url = URL.from_string('ftp://user:pw@ftp.host') 
         self.assertEqual('user:pw@ftp.host', url.netloc())
 
+    def test_port_in_netloc(self):
+        url = URL.from_string('http://localhost:5000')
+        self.assertEqual('localhost', url.host())
+        self.assertEqual(5000, url.port())
+
     def test_port_for_https_url(self):
         url = URL.from_string('https://github.com') 
         self.assertEqual(None, url.port())
@@ -110,7 +115,7 @@ class SimpleExtractionTests(TestCase):
         self.assertEqual('1', self.url.path_segment(2))
 
     def test_port_defaults_to_none(self):
-        self.assertIsNone(self.url.port())
+        self.assert_(self.url.port() is None)
 
     def test_scheme(self):
         self.assertEqual('http', self.url.scheme())
@@ -128,8 +133,7 @@ class SimpleExtractionTests(TestCase):
         self.assertEqual('www', self.url.subdomain(0))
 
     def test_invalid_subdomain_raises_indexerror(self):
-        with self.assertRaises(IndexError):
-            self.url.subdomain(10)
+        self.assertRaises(IndexError, self.url.subdomain, 10)
 
     def test_path(self):
         self.assertEqual('/blog/article/1', self.url.path())
@@ -144,7 +148,7 @@ class SimpleExtractionTests(TestCase):
         self.assertEqual({'q': ['testing']}, self.url.query_params())
 
     def test_path_extraction_returns_none_if_index_too_large(self):
-        self.assertIsNone(self.url.path_segment(14))
+        self.assert_(self.url.path_segment(14) is None)
 
     def test_path_extraction_can_take_default_value(self):
         self.assertEqual('hello', self.url.path_segment(3, default='hello'))
@@ -156,7 +160,7 @@ class SimpleExtractionTests(TestCase):
         self.assertEqual('eggs', self.url.query_param('p', default='eggs'))
 
     def test_parameter_extraction_is_none_if_not_found(self):
-        self.assertIsNone(self.url.query_param('p'))
+        self.assert_(self.url.query_param('p') is None)
 
     def test_path_segments(self):
         self.assertEqual(('blog', 'article', '1'), self.url.path_segments())
