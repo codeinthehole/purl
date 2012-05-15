@@ -143,7 +143,7 @@ Clone and install testing dependencies::
 
 Ensure tests pass::
 
-    nosetests
+    ./runtests.sh
 
 Hack away
 
