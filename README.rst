@@ -23,19 +23,20 @@ Construct::
 
     >>> from purl import URL
 
-    # Explicit constructor
-    >>> u = URL(scheme='https', host='www.google.com', path='/search', query='q=testing')
+    # String constructor
+    >>> from_str = URL('https://www.google.com/search?q=testing')
 
-    # Use factory
-    >>> u = URL.from_string('https://www.google.com/search?q=testing')
+    # Keyword constructor
+    >>> from_kwargs = URL(scheme='https', host='www.google.com', path='/search', query='q=testing')
 
     # Combine
-    >>> u = URL.from_string('https://www.google.com').path('search').query_param('q', 'testing')
+    >>> from_combo = URL('https://www.google.com').path('search').query_param('q', 'testing')
 
 URL objects are immutable - all mutator methods return a new instance.
 
 Interrogate::
 
+    >>> u = URL('https://www.google.com/search?q=testing')
     >>> u.scheme()      
     'https'
     >>> u.host() 
