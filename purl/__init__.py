@@ -7,13 +7,64 @@ from collections import namedtuple
 _URLTuple = namedtuple("_URLTuple", "host username password scheme port path query fragment")
 
 
+def parse(url_str):
+    """
+    Extract all parts from a URL string and return them as a dictionary
+    """
+    result = urlparse.urlparse(url_str)
+    netloc_parts = result.netloc.split('@')
+    if len(netloc_parts) == 1:
+        username = password = None
+        host = netloc_parts[0]
+    else:
+        username, password = netloc_parts[0].split(':')
+        host = netloc_parts[1]
+
+    if host and ':' in host:
+        host = host.split(':')[0]
+
+    return {'host': host,
+            'username': username,
+            'password': password,
+            'scheme': result.scheme,
+            'port': result.port,
+            'path': result.path,
+            'query': result.query,
+            'fragment': result.fragment}
+
+
 class URL(object):
 
     __slots__ = ("_tuple",)
 
-    def __init__(self, host=None, username=None, password=None, scheme='http',
-                 port=None, path='/', query=None, fragment=None):
-        self._tuple = _URLTuple(host, username, password, scheme, port, path, query, fragment)
+    def __init__(self, url_str=None, host=None, username=None, password=None,
+                 scheme=None, port=None, path=None, query=None, fragment=None):
+        if url_str is not None:
+            params = parse(url_str)
+        else:
+            # Defaults
+            params = {'scheme': 'http',
+                      'username': None,
+                      'password': None,
+                      'host': None,
+                      'port': None,
+                      'path': '/',
+                      'query': None,
+                      'fragment': None}
+
+        # Kwargs override the url_str
+        for var in 'host username password scheme port path query fragment'.split():
+            if locals()[var] is not None:
+                params[var] = locals()[var]
+
+        self._tuple = _URLTuple(params['host'],
+                                params['username'],
+                                params['password'],
+                                params['scheme'],
+                                params['port'],
+                                params['path'],
+                                params['query'],
+                                params['fragment'])
 
     def __eq__(self, other):
         return self._tuple == other._tuple
@@ -181,24 +232,7 @@ class URL(object):
     def from_string(cls, url_str):
         """
         Factory method to create a new instance based on a passed string
+
+        This method is deprecated now
         """
-        result = urlparse.urlparse(url_str)
-        netloc_parts = result.netloc.split('@')
-        if len(netloc_parts) == 1:
-            username = password = None
-            host = netloc_parts[0]
-        else:
-            username, password = netloc_parts[0].split(':')
-            host = netloc_parts[1]
-
-        if host and ':' in host:
-            host = host.split(':')[0]
-
-        return cls(host=host,
-                   username=username,
-                   password=password,
-                   scheme=result.scheme,
-                   port=result.port,
-                   path=result.path,
-                   query=result.query,
-                   fragment=result.fragment)
+        return cls(url_str)

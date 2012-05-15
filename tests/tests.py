@@ -25,6 +25,14 @@ class ConstructorTests(TestCase):
     def test_as_string(self):
         self.assertEqual('/', URL().as_string())
 
+    def test_full_url_can_be_used_as_first_param(self):
+        u = URL('https://github.com')
+        self.assertEqual('https://github.com', u.as_string())
+
+    def test_kwargs_take_priority_when_used_with_full_url(self):
+        u = URL('https://github.com', scheme='http')
+        self.assertEqual('http://github.com', u.as_string())
+
 
 class MoreFactoryTests(TestCase):
 

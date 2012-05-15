@@ -1,4 +1,7 @@
 Rework constructor to take string
+- warning on old method
+- passing both string and params
+
 query method?
 maybe rethink the jquery style
 clone method
