@@ -131,12 +131,16 @@ class URL(object):
     def path_segments(self, value=None):
         if value is not None:
             new_path = '/' + '/'.join(value)
-            return URL._mutate(self,  path=new_path)
+            return URL._mutate(self, path=new_path)
         parts = self._tuple.path.split('/')
         segments = parts[1:]
         if self._tuple.path.endswith('/'):
             segments.pop()
         return tuple(segments)
+
+    def add_path_segment(self, value):
+        segments = self.path_segments() + (value,)
+        return self.path_segments(segments)
 
     def has_query_param(self, key):
         return self.query_param(key) is not None

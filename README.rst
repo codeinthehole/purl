@@ -40,17 +40,22 @@ Interrogate::
     u.scheme()      # 'https'
     u.host()        # 'www.google.com' 
     u.domain()      # 'www.google.com' - alias of host
+    u.username()    # None
+    u.password()    # None
+    u.netloc()      # 'www.google.com' (but includes port and auth details if set)
     u.port()        # None - only returns value if explicitly set
     u.path()        # '/search'
     u.query()       # 'q=testing'
     u.fragment()    # 'q=testing'
 
-    u.path_segment(0)   # 'search'
-    u.path_segments()   # ('search',)
-    u.query_param('q')  # 'testing'
+    u.path_segment(0)       # 'search'
+    u.path_segments()       # ('search',)
+    u.query_param('q')      # 'testing'
     u.query_param('q', as_list=True)  # ['testing']
     u.query_param('lang', default='GB')  # 'GB'
-    u.query_params()    # {'q': 'testing'}
+    u.query_params()        # {'q': 'testing'}
+    u.has_query_param('q')  # True
+    u.has_query_params(('q', 'r'))  # False
 
     u.subdomains()   # ['www', 'google', 'com']
     u.subdomain(0)   # 'www'
@@ -66,6 +71,17 @@ to the jQuery API.  Eg::
     # Mutate (creates a new instance)
     new_url = u.path_segment(0, 'tangentlabs') # returns new URL object
 
+Hence, you can build a URL up in steps::
+
+    u = URL()\
+        .scheme('http')\
+        .domain('www.example.com')\
+        .path('/some/path')
+        .query_param('q', 'search term')
+
+Along with the above overloaded methods, there is also a ``add_path_segment``
+method for adding a segment at the end of the current path.
+
 Couple of other things:
 
 * Since the URL class is immutable it can be used as a key in a dictionary
@@ -74,6 +90,11 @@ Couple of other things:
 
 Changelog
 ---------
+
+v0.4
+~~~~
+
+* Added ``add_path_segment`` method
 
 v0.3.2
 ~~~~~~
