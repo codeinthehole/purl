@@ -21,66 +21,87 @@ Use
 
 Construct::
 
-    from purl import URL
+    >>> from purl import URL
 
     # Explicit constructor
-    u = URL(scheme='https', host='www.google.com', path='/search', query='q=testing')
+    >>> u = URL(scheme='https', host='www.google.com', path='/search', query='q=testing')
 
     # Use factory
-    u = URL.from_string('https://www.google.com/search?q=testing')
+    >>> u = URL.from_string('https://www.google.com/search?q=testing')
 
     # Combine
-    u = URL.from_string('http://www.google.com').path('search') \
-                                                .query_param('q', 'testing')
+    >>> u = URL.from_string('https://www.google.com').path('search').query_param('q', 'testing')
 
 URL objects are immutable - all mutator methods return a new instance.
 
 Interrogate::
 
-    u.scheme()      # 'https'
-    u.host()        # 'www.google.com' 
-    u.domain()      # 'www.google.com' - alias of host
-    u.username()    # None
-    u.password()    # None
-    u.netloc()      # 'www.google.com' (but includes port and auth details if set)
-    u.port()        # None - only returns value if explicitly set
-    u.path()        # '/search'
-    u.query()       # 'q=testing'
-    u.fragment()    # 'q=testing'
-
-    u.path_segment(0)       # 'search'
-    u.path_segments()       # ('search',)
-    u.query_param('q')      # 'testing'
-    u.query_param('q', as_list=True)  # ['testing']
-    u.query_param('lang', default='GB')  # 'GB'
-    u.query_params()        # {'q': 'testing'}
-    u.has_query_param('q')  # True
-    u.has_query_params(('q', 'r'))  # False
-
-    u.subdomains()   # ['www', 'google', 'com']
-    u.subdomain(0)   # 'www'
+    >>> u.scheme()      
+    'https'
+    >>> u.host() 
+    'www.google.com'
+    >>> u.domain()
+    'www.google.com'
+    >>> u.username()
+    >>> u.password()    
+    >>> u.netloc()   
+    'www.google.com'
+    >>> u.port()      
+    >>> u.path()       
+    '/search'
+    >>> u.query()       
+    'q=testing'
+    >>> u.fragment()  
+    ''
+    >>> u.path_segment(0) 
+    'search'
+    >>> u.path_segments()  
+    ('search',)
+    >>> u.query_param('q')  
+    'testing'
+    >>> u.query_param('q', as_list=True) 
+    ['testing']
+    >>> u.query_param('lang', default='GB') 
+    'GB'
+    >>> u.query_params() 
+    {'q': ['testing']}
+    >>> u.has_query_param('q') 
+    True
+    >>> u.has_query_params(('q', 'r')) 
+    False
+    >>> u.subdomains()   
+    ['www', 'google', 'com']
+    >>> u.subdomain(0)   
+    'www'
 
 Note that each accessor method is overloaded to be a mutator method too, similar
 to the jQuery API.  Eg::
 
-    u = URL.from_string('https://github.com/codeinthehole')
+    >>> u = URL.from_string('https://github.com/codeinthehole')
 
     # Access
-    u.path_segment(0) # returns 'codeinthehole'
+    >>> u.path_segment(0) 
+    'codeinthehole'
 
     # Mutate (creates a new instance)
-    new_url = u.path_segment(0, 'tangentlabs') # returns new URL object
+    >>> new_url = u.path_segment(0, 'tangentlabs')
+    >>> new_url is u
+    False
+    >>> new_url.path_segment(0)
+    'tangentlabs'
 
 Hence, you can build a URL up in steps::
 
-    u = URL()\
-        .scheme('http')\
-        .domain('www.example.com')\
-        .path('/some/path')
-        .query_param('q', 'search term')
+    >>> u = URL().scheme('http').domain('www.example.com').path('/some/path').query_param('q', 'search term')
+    >>> u.as_string()
+    u'http://www.example.com/some/path?q=search+term'
 
 Along with the above overloaded methods, there is also a ``add_path_segment``
-method for adding a segment at the end of the current path.
+method for adding a segment at the end of the current path::
+
+    >>> new_url = u.add_path_segment('here')
+    >>> new_url.as_string()
+    u'http://www.example.com/some/path/here?q=search+term'
 
 Couple of other things:
 
