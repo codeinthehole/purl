@@ -116,6 +116,7 @@ Changelog
 v0.4
 ~~~~
 
+* Modified constructor to accept full URL string as first arg
 * Added ``add_path_segment`` method
 
 v0.3.2
@@ -133,7 +134,7 @@ v0.3
 
 * Added support for comparison and equality
 * Added support for pickling
-* Added __slots__ so instances can be used as keys within dictionaries
+* Added ``__slots__`` so instances can be used as keys within dictionaries
 
 Contribute
 ----------
