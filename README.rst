@@ -3,7 +3,12 @@ purl - A simple Python URL class
 ================================
 
 A simple, immutable URL class with a clean API for interrogation and
-manipulation.
+manipulation.  
+
+Docs
+----
+
+http://purl.readthedocs.org/en/latest/
 
 Install
 -------
