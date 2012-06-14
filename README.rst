@@ -113,6 +113,12 @@ Couple of other things:
 Changelog
 ---------
 
+v0.4.1
+~~~~~~
+
+* Added API docs
+* Added to readthedocs.org
+
 v0.4
 ~~~~
 
