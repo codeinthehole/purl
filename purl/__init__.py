@@ -34,6 +34,19 @@ def parse(url_str):
 
 
 class URL(object):
+    """
+    The immutable URL class
+
+    The constructor can be used in two ways:
+
+    1. Pass a URL string::
+
+        >>> URL('http://www.google.com')
+
+    2. Pass keyword arguments::
+
+        >>> URL(host='google.com')
+    """
 
     __slots__ = ("_tuple",)
 
@@ -102,6 +115,9 @@ class URL(object):
     # extra args are passed
 
     def netloc(self):
+        """
+        Return the netloc
+        """
         url = self._tuple
         if url.username and url.password:
             netloc = u'%s:%s@%s' % (url.username, url.password, url.host)
@@ -112,6 +128,11 @@ class URL(object):
         return netloc
 
     def host(self, value=None):
+        """
+        Return the host
+
+        :param value: new host string
+        """
         if value:
             return URL._mutate(self, host=value)
         return self._tuple.host
@@ -119,12 +140,24 @@ class URL(object):
     domain = host
 
     def username(self):
+        """
+        Return the username
+        """
         return self._tuple.username
 
     def password(self):
+        """
+        Return the password
+        """
         return self._tuple.password
 
     def subdomains(self, value=None):
+        """
+        Returns a list of subdomains or set the subdomains and returns a
+        new :class:`URL` instance.
+
+        :param value: a list of subdomains
+        """
         if value is not None:
             return URL._mutate(self, host='.'.join(value))
         return self.host().split('.')
