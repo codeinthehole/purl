@@ -40,8 +40,9 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
+import datetime
 project = u'purl'
-copyright = u'2012, <a href="http://codeinthehole.com">David Winterbottom</a>'
+copyright = u'%s, David Winterbottom' % datetime.date.today().year
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
