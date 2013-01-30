@@ -1,10 +1,15 @@
+from __future__ import unicode_literals
 __title__ = 'purl'
 __version__ = '0.4.1'
 __author__ = 'David Winterbottom'
 __license__ = 'MIT'
 
-import urlparse
 import urllib
+try:
+    import urlparse
+except ImportError:
+    from urllib import parse as urlparse
+    urllib.urlencode = urlparse.urlencode
 from collections import namedtuple
 
 
@@ -46,12 +51,12 @@ class URL(object):
     1. Pass a URL string::
 
         >>> URL('http://www.google.com/search?q=testing')
-        u'http://google.com/search?q=testing'
+        'http://google.com/search?q=testing'
 
     2. Pass keyword arguments::
 
         >>> URL(host='www.google.com', path='/search', query='q=testing')
-        u'http://google.com/search?q=testing'
+        'http://google.com/search?q=testing'
 
     If you pass both a URL string and keyword args, then the values of keyword
     args take precedence.
@@ -108,14 +113,14 @@ class URL(object):
 
     def __unicode__(self):
         url = self._tuple
-        parts = ["%s://" % url.scheme if url.scheme else u'',
+        parts = ["%s://" % url.scheme if url.scheme else '',
                  self.netloc(),
                  url.path,
-                 u'?%s' % url.query if url.query else u'',
-                 u'#%s' % url.fragment if url.fragment else u'']
+                 '?%s' % url.query if url.query else '',
+                 '#%s' % url.fragment if url.fragment else '']
         if url.host is None:
-            return u''.join(parts[2:])
-        return u''.join(parts)
+            return ''.join(parts[2:])
+        return ''.join(parts)
 
     __str__ = as_string = __unicode__
 
@@ -129,11 +134,11 @@ class URL(object):
         """
         url = self._tuple
         if url.username and url.password:
-            netloc = u'%s:%s@%s' % (url.username, url.password, url.host)
+            netloc = '%s:%s@%s' % (url.username, url.password, url.host)
         else:
             netloc = url.host
         if url.port:
-            netloc = u'%s:%s' % (netloc, url.port)
+            netloc = '%s:%s' % (netloc, url.port)
         return netloc
 
     def host(self, value=None):
@@ -287,7 +292,7 @@ class URL(object):
 
             >>> u = URL('http://example.com/foo/')
             >>> u.add_path_segment('bar')
-            u'http://example.com/foo/bar'
+            'http://example.com/foo/bar'
         """
         segments = self.path_segments() + (value,)
         return self.path_segments(segments)
