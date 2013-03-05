@@ -245,8 +245,8 @@ class URL(object):
     def path_segment(self, index, value=None, default=None):
         """
         Return the path segment at the given index
-        
-        :param integer index: 
+
+        :param integer index:
         :param string value: the new segment value
         :param string default: the default value to return if no path segment exists with the given index
         """
@@ -265,7 +265,7 @@ class URL(object):
     def path_segments(self, value=None):
         """
         Return the path segments
-        
+
         :param list value: the new path segments to use
         """
         if value is not None:
@@ -280,7 +280,7 @@ class URL(object):
     def add_path_segment(self, value):
         """
         Add a new path segment to the end of the current string
-        
+
         :param string value: the new path segment to use
 
         Example::
