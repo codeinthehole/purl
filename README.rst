@@ -100,14 +100,14 @@ Hence, you can build a URL up in steps::
 
     >>> u = URL().scheme('http').domain('www.example.com').path('/some/path').query_param('q', 'search term')
     >>> u.as_string()
-    u'http://www.example.com/some/path?q=search+term'
+    'http://www.example.com/some/path?q=search+term'
 
 Along with the above overloaded methods, there is also a ``add_path_segment``
 method for adding a segment at the end of the current path::
 
     >>> new_url = u.add_path_segment('here')
     >>> new_url.as_string()
-    u'http://www.example.com/some/path/here?q=search+term'
+    'http://www.example.com/some/path/here?q=search+term'
 
 Couple of other things:
 

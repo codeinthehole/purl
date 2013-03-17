@@ -1,10 +1,15 @@
+from __future__ import unicode_literals
+
 __title__ = 'purl'
 __version__ = '0.4.1'
 __author__ = 'David Winterbottom'
 __license__ = 'MIT'
 
-import urlparse
-import urllib
+try:
+    from urllib.parse import parse_qs, urlencode, urlparse
+except ImportError:
+    from urllib import urlencode
+    from urlparse import parse_qs, urlparse
 from collections import namedtuple
 
 
@@ -17,7 +22,7 @@ def parse(url_str):
     """
     Extract all parts from a URL string and return them as a dictionary
     """
-    result = urlparse.urlparse(url_str)
+    result = urlparse(url_str)
     netloc_parts = result.netloc.split('@')
     if len(netloc_parts) == 1:
         username = password = None
@@ -45,13 +50,13 @@ class URL(object):
 
     1. Pass a URL string::
 
-        >>> URL('http://www.google.com/search?q=testing')
-        u'http://google.com/search?q=testing'
+        >>> URL('http://www.google.com/search?q=testing').as_string()
+        'http://www.google.com/search?q=testing'
 
     2. Pass keyword arguments::
 
-        >>> URL(host='www.google.com', path='/search', query='q=testing')
-        u'http://google.com/search?q=testing'
+        >>> URL(host='www.google.com', path='/search', query='q=testing').as_string()
+        'http://www.google.com/search?q=testing'
 
     If you pass both a URL string and keyword args, then the values of keyword
     args take precedence.
@@ -108,14 +113,14 @@ class URL(object):
 
     def __unicode__(self):
         url = self._tuple
-        parts = ["%s://" % url.scheme if url.scheme else u'',
+        parts = ["%s://" % url.scheme if url.scheme else '',
                  self.netloc(),
                  url.path,
-                 u'?%s' % url.query if url.query else u'',
-                 u'#%s' % url.fragment if url.fragment else u'']
+                 '?%s' % url.query if url.query else '',
+                 '#%s' % url.fragment if url.fragment else '']
         if url.host is None:
-            return u''.join(parts[2:])
-        return u''.join(parts)
+            return ''.join(parts[2:])
+        return ''.join(parts)
 
     __str__ = as_string = __unicode__
 
@@ -129,11 +134,11 @@ class URL(object):
         """
         url = self._tuple
         if url.username and url.password:
-            netloc = u'%s:%s@%s' % (url.username, url.password, url.host)
+            netloc = '%s:%s@%s' % (url.username, url.password, url.host)
         else:
             netloc = url.host
         if url.port:
-            netloc = u'%s:%s' % (netloc, url.port)
+            netloc = '%s:%s' % (netloc, url.port)
         return netloc
 
     def host(self, value=None):
@@ -245,8 +250,8 @@ class URL(object):
     def path_segment(self, index, value=None, default=None):
         """
         Return the path segment at the given index
-        
-        :param integer index: 
+
+        :param integer index:
         :param string value: the new segment value
         :param string default: the default value to return if no path segment exists with the given index
         """
@@ -265,7 +270,7 @@ class URL(object):
     def path_segments(self, value=None):
         """
         Return the path segments
-        
+
         :param list value: the new path segments to use
         """
         if value is not None:
@@ -280,14 +285,14 @@ class URL(object):
     def add_path_segment(self, value):
         """
         Add a new path segment to the end of the current string
-        
+
         :param string value: the new path segment to use
 
         Example::
 
             >>> u = URL('http://example.com/foo/')
-            >>> u.add_path_segment('bar')
-            u'http://example.com/foo/bar'
+            >>> u.add_path_segment('bar').as_string()
+            'http://example.com/foo/bar'
         """
         segments = self.path_segments() + (value,)
         return self.path_segments(segments)
@@ -320,8 +325,7 @@ class URL(object):
         parse_result = self.query_params()
         if value is not None:
             parse_result[key] = value
-            return URL._mutate(self, query=urllib.urlencode(parse_result,
-                                                            doseq=True))
+            return URL._mutate(self, query=urlencode(parse_result, doseq=True))
         try:
             result = parse_result[key]
         except KeyError:
@@ -337,9 +341,9 @@ class URL(object):
         :param dict value: new dictionary of values
         """
         if value is not None:
-            return URL._mutate(self, query=urllib.urlencode(value, doseq=True))
+            return URL._mutate(self, query=urlencode(value, doseq=True))
         query = '' if self._tuple.query is None else self._tuple.query
-        return urlparse.parse_qs(query, True)
+        return parse_qs(query, True)
 
     @classmethod
     def _mutate(cls, url, **kwargs):
