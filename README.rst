@@ -118,6 +118,11 @@ Couple of other things:
 Changelog
 ---------
 
+v0.5
+~~~~
+
+* Added support for Python 3.2/3.3 (thanks @pmcnr and @mitchellrj)
+
 v0.4.1
 ~~~~~~
 
