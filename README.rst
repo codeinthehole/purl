@@ -41,7 +41,7 @@ URL objects are immutable - all mutator methods return a new instance.
 
 Interrogate::
 
-    >>> u = URL('https://www.google.com/search?q=testing')
+    >>> u = URL(u'https://www.google.com/search?q=testing')
     >>> u.scheme()      
     u'https'
     >>> u.host() 

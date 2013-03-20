@@ -22,7 +22,7 @@ def parse(url_str):
     """
     Extract all parts from a URL string and return them as a dictionary
     """
-    result = urlparse(unicode(url_str))
+    result = urlparse(url_str)
     netloc_parts = result.netloc.split('@')
     if len(netloc_parts) == 1:
         username = password = None
