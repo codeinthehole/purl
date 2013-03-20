@@ -164,4 +164,5 @@ Build status
 ------------
 
 .. image:: https://secure.travis-ci.org/codeinthehole/purl.png
+    :target: https://travis-ci.org/codeinthehole/purl
 
