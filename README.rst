@@ -43,42 +43,42 @@ Interrogate::
 
     >>> u = URL('https://www.google.com/search?q=testing')
     >>> u.scheme()      
-    'https'
+    u'https'
     >>> u.host() 
-    'www.google.com'
+    u'www.google.com'
     >>> u.domain()
-    'www.google.com'
+    u'www.google.com'
     >>> u.username()
     >>> u.password()    
     >>> u.netloc()   
-    'www.google.com'
+    u'www.google.com'
     >>> u.port()      
     >>> u.path()       
-    '/search'
+    u'/search'
     >>> u.query()       
-    'q=testing'
+    u'q=testing'
     >>> u.fragment()  
     ''
     >>> u.path_segment(0) 
-    'search'
+    u'search'
     >>> u.path_segments()  
-    ('search',)
+    (u'search',)
     >>> u.query_param('q')  
-    'testing'
+    u'testing'
     >>> u.query_param('q', as_list=True) 
-    ['testing']
-    >>> u.query_param('lang', default='GB') 
-    'GB'
+    [u'testing']
+    >>> u.query_param('lang', default=u'GB') 
+    u'GB'
     >>> u.query_params() 
-    {'q': ['testing']}
+    {u'q': [u'testing']}
     >>> u.has_query_param('q') 
     True
     >>> u.has_query_params(('q', 'r')) 
     False
     >>> u.subdomains()   
-    ['www', 'google', 'com']
+    [u'www', u'google', u'com']
     >>> u.subdomain(0)   
-    'www'
+    u'www'
 
 Note that each accessor method is overloaded to be a mutator method too, similar
 to the jQuery API.  Eg::
@@ -87,14 +87,14 @@ to the jQuery API.  Eg::
 
     # Access
     >>> u.path_segment(0) 
-    'codeinthehole'
+    u'codeinthehole'
 
     # Mutate (creates a new instance)
     >>> new_url = u.path_segment(0, 'tangentlabs')
     >>> new_url is u
     False
     >>> new_url.path_segment(0)
-    'tangentlabs'
+    u'tangentlabs'
 
 Hence, you can build a URL up in steps::
 
