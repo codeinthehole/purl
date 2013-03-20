@@ -45,13 +45,15 @@ class URL(object):
 
     1. Pass a URL string::
 
-        >>> URL('http://www.google.com/search?q=testing')
-        u'http://google.com/search?q=testing'
+        >>> u = URL('http://www.google.com/search?q=testing')
+        >>> print u
+        http://www.google.com/search?q=testing
 
     2. Pass keyword arguments::
 
-        >>> URL(host='www.google.com', path='/search', query='q=testing')
-        u'http://google.com/search?q=testing'
+        >>> u = URL(host='www.google.com', path='/search', query='q=testing')
+        >>> print u
+        http://www.google.com/search?q=testing
 
     If you pass both a URL string and keyword args, then the values of keyword
     args take precedence.
@@ -245,8 +247,8 @@ class URL(object):
     def path_segment(self, index, value=None, default=None):
         """
         Return the path segment at the given index
-        
-        :param integer index: 
+
+        :param integer index:
         :param string value: the new segment value
         :param string default: the default value to return if no path segment exists with the given index
         """
@@ -265,7 +267,7 @@ class URL(object):
     def path_segments(self, value=None):
         """
         Return the path segments
-        
+
         :param list value: the new path segments to use
         """
         if value is not None:
@@ -280,14 +282,15 @@ class URL(object):
     def add_path_segment(self, value):
         """
         Add a new path segment to the end of the current string
-        
+
         :param string value: the new path segment to use
 
         Example::
 
             >>> u = URL('http://example.com/foo/')
-            >>> u.add_path_segment('bar')
-            u'http://example.com/foo/bar'
+            >>> u = u.add_path_segment('bar')
+            >>> print u
+            http://example.com/foo/bar
         """
         segments = self.path_segments() + (value,)
         return self.path_segments(segments)
