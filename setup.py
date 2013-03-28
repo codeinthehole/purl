@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 from purl import __version__
 
 setup(name='purl',
-      version=__version__,
+      version=__version__.encode('utf8'),
       description="An immutable URL class for easy URL-building and manipulation",
       long_description=open('README.rst').read(),
       license=open('LICENSE').read(),
