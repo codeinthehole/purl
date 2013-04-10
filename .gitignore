@@ -1,3 +1,6 @@
+*.egg-info/
+*.pyc
+.tox
+__pycache__/
 dist/*
 docs/_build/*
-.tox

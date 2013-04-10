@@ -13,6 +13,18 @@ except ImportError:
 from collections import namedtuple
 
 
+# Python 2/3 compatibility
+import sys
+PY3 = sys.version_info[0] == 3
+
+if PY3:
+    def b(s):
+        return s
+else:
+    def b(s):
+        return s.encode('utf8')
+
+
 # To minimise memory consumption, we use a namedtuple to store all instance
 # variables, as well as using the __slots__ attribute.
 _URLTuple = namedtuple("_URLTuple", "host username password scheme port path query fragment")
