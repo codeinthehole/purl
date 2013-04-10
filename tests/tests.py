@@ -290,3 +290,30 @@ class MiscTests(TestCase):
         pickled = pickle.dumps(u)
         v = pickle.loads(pickled)
         self.assertEqual(u, v)
+
+
+class QueryParamListTests(TestCase):
+
+    def test_set_list(self):
+        base = URL('http://127.0.0.1/')
+        url = base.query_param('q', ['something', 'else'])
+        values = url.query_param('q', as_list=True)
+        self.assertEqual(['something', 'else'], values)
+
+    def test_remove_item_from_list(self):
+        base = URL('http://127.0.0.1/?q=a&q=b')
+        url = base.remove_query_param('q', 'a')
+        values = url.query_param('q', as_list=True)
+        self.assertEqual(['b'], values)
+
+    def test_append_to_existing_list(self):
+        base = URL('http://127.0.0.1/?q=a&q=b')
+        url = base.append_query_param('q', 'c')
+        values = url.query_param('q', as_list=True)
+        self.assertEqual(['a', 'b', 'c'], values)
+
+    def test_append_to_nonexistant_list(self):
+        base = URL('http://127.0.0.1/?q=a&q=b')
+        url = base.append_query_param('p', 'c')
+        values = url.query_param('p', as_list=True)
+        self.assertEqual(['c'], values)

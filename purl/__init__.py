@@ -247,6 +247,10 @@ class URL(object):
             return URL._mutate(self, fragment=value)
         return self._tuple.fragment
 
+    # ====
+    # Path
+    # ====
+
     def path_segment(self, index, value=None, default=None):
         """
         Return the path segment at the given index
@@ -297,6 +301,10 @@ class URL(object):
         segments = self.path_segments() + (value,)
         return self.path_segments(segments)
 
+    # ============
+    # Query params
+    # ============
+
     def has_query_param(self, key):
         """
         Test if a given query parameter is present
@@ -317,6 +325,8 @@ class URL(object):
         """
         Return or set a query parameter for the given key
 
+        The value can be a list.
+
         :param string key: key to look for
         :param string default: value to return if ``key`` isn't found
         :param boolean as_list: whether to return the values as a list
@@ -334,6 +344,17 @@ class URL(object):
             return result
         return result[0] if len(result) == 1 else result
 
+    def append_query_param(self, key, value):
+        """
+        Append a query parameter
+
+        :param string key: The query param key
+        :param string value: The new value
+        """
+        values = self.query_param(key, as_list=True, default=[])
+        values.append(value)
+        return self.query_param(key, values)
+
     def query_params(self, value=None):
         """
         Return or set a dictionary of query params
@@ -345,14 +366,21 @@ class URL(object):
         query = '' if self._tuple.query is None else self._tuple.query
         return parse_qs(query, True)
 
-    def remove_query_param(self, key):
+    def remove_query_param(self, key, value=None):
         """
         Remove a query param from a URL
 
+        Set the value parameter if removing from a list.
+
         :param string key: The key to delete
+        :param string value: The value of the param to delete (of more than one)
         """
         parse_result = self.query_params()
-        del parse_result[key]
+        if value is not None:
+            index = parse_result[key].index(value)
+            del parse_result[key][index]
+        else:
+            del parse_result[key]
         return URL._mutate(self, query=urlencode(parse_result, doseq=True))
 
     @classmethod
