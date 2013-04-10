@@ -71,25 +71,25 @@ class FactoryTests(TestCase):
 class EdgeCaseExtractionTests(TestCase):
 
     def test_no_equals_sign_means_empty_string(self):
-        url = URL.from_string('http://www.google.com/blog/article/1?q') 
+        url = URL.from_string('http://www.google.com/blog/article/1?q')
         self.assertEqual('', url.query_param('q'))
 
     def test_list_extraction(self):
-        url = URL.from_string('http://www.google.com/?q=1&q=2&q=3') 
+        url = URL.from_string('http://www.google.com/?q=1&q=2&q=3')
         self.assertEqual(['1', '2', '3'], url.query_param('q'))
 
     def test_username_extraction(self):
-        url = URL.from_string('ftp://user:pw@ftp.host') 
+        url = URL.from_string('ftp://user:pw@ftp.host')
         self.assertEqual('user', url.username())
         self.assertEqual('pw', url.password())
 
     def test_username_in_unicode_repr(self):
         u = 'ftp://user:pw@ftp.host'
-        url = URL.from_string(u) 
+        url = URL.from_string(u)
         self.assertEqual(u, str(url))
 
     def test_auth_in_netloc(self):
-        url = URL.from_string('ftp://user:pw@ftp.host') 
+        url = URL.from_string('ftp://user:pw@ftp.host')
         self.assertEqual('user:pw@ftp.host', url.netloc())
 
     def test_port_in_netloc(self):
@@ -98,17 +98,22 @@ class EdgeCaseExtractionTests(TestCase):
         self.assertEqual(5000, url.port())
 
     def test_port_for_https_url(self):
-        url = URL.from_string('https://github.com') 
+        url = URL.from_string('https://github.com')
         self.assertEqual(None, url.port())
 
 
 class SimpleExtractionTests(TestCase):
 
     def setUp(self):
-        self.url = URL.from_string('http://www.google.com/blog/article/1?q=testing') 
+        self.url = URL.from_string('http://www.google.com/blog/article/1?q=testing')
 
     def test_has_actual_param(self):
         self.assertTrue(self.url.has_query_param('q'))
+
+    def test_remove_query_param(self):
+        new_url = self.url.remove_query_param('q')
+        self.assertEqual('http://www.google.com/blog/article/1',
+                         new_url.as_string())
 
     def test_has_query_params(self):
         self.assertTrue(self.url.has_query_params(['q']))
@@ -201,7 +206,7 @@ class BuilderTests(TestCase):
     def test_setting_list_as_query_param(self):
         url = URL().query_param('q', ['testing', 'eggs'])
         self.assertEqual(['testing', 'eggs'], url.query_param('q', as_list=True))
-    
+
     def test_build_relative_url(self):
         url = URL().path('searching')
         self.assertEqual('/searching', str(url))

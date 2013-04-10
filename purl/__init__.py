@@ -315,7 +315,7 @@ class URL(object):
 
     def query_param(self, key, value=None, default=None, as_list=False):
         """
-        Return a query parameter for the given key
+        Return or set a query parameter for the given key
 
         :param string key: key to look for
         :param string default: value to return if ``key`` isn't found
@@ -336,7 +336,7 @@ class URL(object):
 
     def query_params(self, value=None):
         """
-        Return a dictionary of query params
+        Return or set a dictionary of query params
 
         :param dict value: new dictionary of values
         """
@@ -344,6 +344,16 @@ class URL(object):
             return URL._mutate(self, query=urlencode(value, doseq=True))
         query = '' if self._tuple.query is None else self._tuple.query
         return parse_qs(query, True)
+
+    def remove_query_param(self, key):
+        """
+        Remove a query param from a URL
+
+        :param string key: The key to delete
+        """
+        parse_result = self.query_params()
+        del parse_result[key]
+        return URL._mutate(self, query=urlencode(parse_result, doseq=True))
 
     @classmethod
     def _mutate(cls, url, **kwargs):
