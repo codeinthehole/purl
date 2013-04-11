@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 
 __title__ = 'purl'
-__version__ = '0.5'
+__version__ = '0.6'
 __author__ = 'David Winterbottom'
 __license__ = 'MIT'
 

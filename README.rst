@@ -118,6 +118,12 @@ Couple of other things:
 Changelog
 ---------
 
+v0.6
+~~~~
+
+* Added ``append_query_param`` method
+* Added ``remove_query_param`` method
+
 v0.5
 ~~~~
 
