@@ -317,3 +317,18 @@ class QueryParamListTests(TestCase):
         url = base.append_query_param('p', 'c')
         values = url.query_param('p', as_list=True)
         self.assertEqual(['c'], values)
+
+
+class ConcatenationTests(TestCase):
+
+    def test_concatenation(self):
+        left = URL(host='127.0.0.1', path='/some_path/')
+        right = '../other_path/'
+        joined = left + right
+        self.assertEqual('http://127.0.0.1/other_path/', joined.as_string())
+
+    def test_reverse_concatenation(self):
+        left = 'http://127.0.0.1/some_path/'
+        right = URL(path='../other_path/')
+        joined = left + right
+        self.assertEqual('http://127.0.0.1/other_path/', joined.as_string())
