@@ -6,10 +6,10 @@ __author__ = 'David Winterbottom'
 __license__ = 'MIT'
 
 try:
-    from urllib.parse import parse_qs, urlencode, urlparse
+    from urllib.parse import parse_qs, urlencode, urlparse, urljoin
 except ImportError:
     from urllib import urlencode
-    from urlparse import parse_qs, urlparse
+    from urlparse import parse_qs, urlparse, urljoin
 from collections import namedtuple
 
 
@@ -110,6 +110,12 @@ class URL(object):
 
     def __ne__(self, other):
         return self._tuple != other._tuple
+
+    def __add__(self, other):
+        return URL(urljoin(self.as_string(), str(other)))
+
+    def __radd__(self, other):
+        return URL(urljoin(str(other), self.as_string()))
 
     def __getstate__(self):
         return tuple(self._tuple)
