@@ -11,6 +11,8 @@ except ImportError:
     from urllib import urlencode
     from urlparse import parse_qs, urlparse
 from collections import namedtuple
+import re
+import functools
 
 
 # Python 2/3 compatibility
@@ -409,3 +411,32 @@ class URL(object):
         This method is deprecated now
         """
         return cls(url_str)
+
+
+class Template(object):
+
+    def __init__(self, url_str):
+        self._base = URL(url_str)
+
+    def expand(self, variables=None):
+        if variables is None:
+            variables = {}
+        regexp = re.compile("{([^\}]+)}")
+        url = regexp.sub(functools.partial(self._replace, variables),
+                         self._base.as_string())
+        return URL(url)
+
+    def _replace(self, variables, match):
+        expression = match.group(1)
+        if expression[0] == '?':
+            # Form-style parameters
+            params = {}
+            for key in expression[1:].split(','):
+                if key in variables:
+                    params[key] = variables[key]
+            url = URL().query_params(params)
+            return '?' + url.query()
+
+        if expression in variables:
+            # Path expansion
+            return variables[expression]
