@@ -33,6 +33,12 @@ data = [
     # Level 3 - reserved expansion with multiple variables
     ('{+x,hello,y}', level3_vars, '1024,Hello%20World!,768'),
     ('{+path,x}/here', level3_vars, '/foo/bar,1024/here'),
+    # Level 3 - fragment expansion with multiple variables
+    ('{#x,hello,y}', level3_vars, '#1024,Hello%20World!,768'),
+    ('{#path,x}/here', level3_vars, '#/foo/bar,1024/here'),
+    # Level 3 - label expansion
+    ('X{.var}', level3_vars, 'X.value'),
+    ('X{.x,y}', level3_vars, 'X.1024.768'),
 ]
 
 old = [
