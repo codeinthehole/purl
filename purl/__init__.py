@@ -428,32 +428,33 @@ class Template(object):
         return URL(url)
 
     def _replace(self, variables, match):
+
         expression = match.group(1)
 
-        safe = "/!"
-        if expression[0] == '+':
-            # Level 2 expansion - allowed to contain reserved URI
-            # characters
-            variable = expression[1:]
-            if variable in variables:
-                return quote(variables[variable], safe)
+        # Each operator defines an escaping function, a prefix
+        operators = {
+            '+': None,
+            '#': None,
+        }
+        operator = None
+        if expression[0] in operators:
+            operator = expression[0]
 
-        if expression[0] == '#':
-            # Level 2 expansion - allowed to contain reserved URI
-            # characters
-            variable = expression[1:]
-            if variable in variables:
-                return '#' + quote(variables[variable], safe)
+        # Escaping function
+        if operator:
+            escape = functools.partial(quote, safe="/!")
+            keys = expression[1:].split(',')
+        else:
+            escape = functools.partial(quote, safe="/")
+            keys = expression.split(',')
 
-        if expression[0] == '?':
-            # Form-style parameters
-            params = {}
-            for key in expression[1:].split(','):
-                if key in variables:
-                    params[key] = variables[key]
-            url = URL().query_params(params)
-            return '?' + url.query()
+        replacements = []
+        for key in keys:
+            if key in variables:
+                replacements.append(escape(variables[key]))
 
-        if expression in variables:
-            # Path expansion
-            return quote(variables[expression])
+        prefix = ''
+        if operator == '#':
+            prefix = '#'
+
+        return prefix + ','.join(replacements)
