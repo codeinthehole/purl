@@ -6,9 +6,10 @@ __author__ = 'David Winterbottom'
 __license__ = 'MIT'
 
 try:
-    from urllib.parse import parse_qs, urlencode, urlparse
+    from urllib.parse import parse_qs, urlencode, urlparse, quote
 except ImportError:
-    from urllib import urlencode
+    # Python 2
+    from urllib import urlencode, quote
     from urlparse import parse_qs, urlparse
 from collections import namedtuple
 import re
@@ -428,6 +429,22 @@ class Template(object):
 
     def _replace(self, variables, match):
         expression = match.group(1)
+
+        safe = "/!"
+        if expression[0] == '+':
+            # Level 2 expansion - allowed to contain reserved URI
+            # characters
+            variable = expression[1:]
+            if variable in variables:
+                return quote(variables[variable], safe)
+
+        if expression[0] == '#':
+            # Level 2 expansion - allowed to contain reserved URI
+            # characters
+            variable = expression[1:]
+            if variable in variables:
+                return '#' + quote(variables[variable], safe)
+
         if expression[0] == '?':
             # Form-style parameters
             params = {}
@@ -439,4 +456,4 @@ class Template(object):
 
         if expression in variables:
             # Path expansion
-            return variables[expression]
+            return quote(variables[expression])
