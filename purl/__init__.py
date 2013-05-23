@@ -79,6 +79,8 @@ class URL(object):
     def __init__(self, url_str=None, host=None, username=None, password=None,
                  scheme=None, port=None, path=None, query=None, fragment=None):
         if url_str is not None:
+            if isinstance(url_str, unicode):
+                url_str = url_str.encode('ascii')
             params = parse(url_str)
         else:
             # Defaults

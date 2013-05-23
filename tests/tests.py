@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 from unittest import TestCase
 import pickle
+import urllib
 
 from purl import URL
 
@@ -177,6 +179,25 @@ class SimpleExtractionTests(TestCase):
 
     def test_path_segments(self):
         self.assertEqual(('blog', 'article', '1'), self.url.path_segments())
+
+
+class UnicodeExtractionTests(TestCase):
+    def setUp(self):
+        self.unicode_param = u'значение'
+        self.urlencoded_param = urllib.quote(
+            self.unicode_param.encode('utf8'))
+        url = 'http://www.google.com/blog/article/1?q=' + self.urlencoded_param
+        self.ascii_url = URL.from_string(url)
+        # django request.get_full_path() returns url as unicode
+        self.unicode_url = URL.from_string(unicode(url))
+
+    def test_get_query_param_ascii_url(self):
+        params = self.ascii_url.query_params()
+        self.assertEqual(params['q'][0].decode('utf8'), self.unicode_param)
+
+    def test_get_query_param_unicode_url(self):
+        params = self.unicode_url.query_params()
+        self.assertEqual(params['q'][0].decode('utf8'), self.unicode_param)
 
 
 class NoTrailingSlashTests(TestCase):
