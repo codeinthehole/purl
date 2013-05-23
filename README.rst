@@ -3,7 +3,7 @@ purl - A simple Python URL class
 ================================
 
 A simple, immutable URL class with a clean API for interrogation and
-manipulation.  
+manipulation.
 
 Docs
 ----
@@ -42,42 +42,42 @@ URL objects are immutable - all mutator methods return a new instance.
 Interrogate::
 
     >>> u = URL(u'https://www.google.com/search?q=testing')
-    >>> u.scheme()      
-    u'https'
-    >>> u.host() 
+    >>> u.scheme()
+    'https'
+    >>> u.host()
     u'www.google.com'
     >>> u.domain()
     u'www.google.com'
     >>> u.username()
-    >>> u.password()    
-    >>> u.netloc()   
+    >>> u.password()
+    >>> u.netloc()
     u'www.google.com'
-    >>> u.port()      
-    >>> u.path()       
-    u'/search'
-    >>> u.query()       
-    u'q=testing'
-    >>> u.fragment()  
+    >>> u.port()
+    >>> u.path()
+    '/search'
+    >>> u.query()
+    'q=testing'
+    >>> u.fragment()
     ''
-    >>> u.path_segment(0) 
+    >>> u.path_segment(0)
     u'search'
-    >>> u.path_segments()  
+    >>> u.path_segments()
     (u'search',)
-    >>> u.query_param('q')  
-    u'testing'
-    >>> u.query_param('q', as_list=True) 
-    [u'testing']
-    >>> u.query_param('lang', default=u'GB') 
+    >>> u.query_param('q')
+    'testing'
+    >>> u.query_param('q', as_list=True)
+    ['testing']
+    >>> u.query_param('lang', default=u'GB')
     u'GB'
-    >>> u.query_params() 
-    {u'q': [u'testing']}
-    >>> u.has_query_param('q') 
+    >>> u.query_params()
+    {'q': ['testing']}
+    >>> u.has_query_param('q')
     True
-    >>> u.has_query_params(('q', 'r')) 
+    >>> u.has_query_params(('q', 'r'))
     False
-    >>> u.subdomains()   
+    >>> u.subdomains()
     [u'www', u'google', u'com']
-    >>> u.subdomain(0)   
+    >>> u.subdomain(0)
     u'www'
 
 Note that each accessor method is overloaded to be a mutator method too, similar
@@ -86,7 +86,7 @@ to the jQuery API.  Eg::
     >>> u = URL.from_string('https://github.com/codeinthehole')
 
     # Access
-    >>> u.path_segment(0) 
+    >>> u.path_segment(0)
     u'codeinthehole'
 
     # Mutate (creates a new instance)
