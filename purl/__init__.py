@@ -46,6 +46,21 @@ def decode_dict(raw_dict):
     return decoded
 
 
+def encode(query, doseq=True):
+    """
+    Custom wrapper around urlencode to support unicode
+    """
+    pairs = []
+    for key, value in query.items():
+        if isinstance(value, list):
+            value = list(map(lambda x: x.encode('utf8'), value))
+        else:
+            value = value.encode('utf8')
+        pairs.append((key.encode('utf8'), value))
+    encoded_query = dict(pairs)
+    return urlencode(encoded_query, doseq)
+
+
 def parse(url_str):
     """
     Extract all parts from a URL string and return them as a dictionary
@@ -367,7 +382,8 @@ class URL(object):
         parse_result = self.query_params()
         if value is not None:
             parse_result[key] = value
-            return URL._mutate(self, query=urlencode(parse_result, doseq=True))
+            return URL._mutate(self, query=encode(parse_result, doseq=True))
+
         try:
             result = parse_result[key]
         except KeyError:
@@ -394,7 +410,7 @@ class URL(object):
         :param dict value: new dictionary of values
         """
         if value is not None:
-            return URL._mutate(self, query=urlencode(value, doseq=True))
+            return URL._mutate(self, query=encode(value, doseq=True))
         query = '' if self._tuple.query is None else self._tuple.query
 
         # In Python 2.6, urlparse needs a byte string
@@ -420,7 +436,7 @@ class URL(object):
             del parse_result[key][index]
         else:
             del parse_result[key]
-        return URL._mutate(self, query=urlencode(parse_result, doseq=True))
+        return URL._mutate(self, query=encode(parse_result, doseq=True))
 
     @classmethod
     def _mutate(cls, url, **kwargs):

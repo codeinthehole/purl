@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from unittest import TestCase
 import pickle
 
@@ -343,3 +344,26 @@ class QueryParamListTests(TestCase):
         url = base.append_query_param('p', 'c')
         values = url.query_param('p', as_list=True)
         self.assertEqual(['c'], values)
+
+
+class UnicodeTests(TestCase):
+
+    def setUp(self):
+        self.base = URL('http://127.0.0.1/')
+        self.text = u'ć'
+
+    def test_set_query_param_value(self):
+        url = self.base.query_param('q', self.text)
+        self.assertEqual(self.text, url.query_param('q'))
+
+    def test_set_query_param_key(self):
+        url = self.base.query_param(self.text, 'value')
+        self.assertEqual('value', url.query_param(self.text))
+
+    def test_append_query_param(self):
+        url = self.base.append_query_param('q', self.text)
+        self.assertEqual(self.text, url.query_param('q'))
+
+    def test_set_query_params(self):
+        url = self.base.query_params({'q': self.text})
+        self.assertEqual(self.text, url.query_param('q'))
