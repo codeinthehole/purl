@@ -1,3 +1,5 @@
+import collections
+
 from nose.tools import eq_
 
 from purl.template import expand
@@ -17,9 +19,8 @@ level3_vars.update({
 level4_vars = level2_vars.copy()
 level4_vars.update({
     'list': ['red', 'green', 'blue'],
-    'keys': {'semi': ';',
-             'dot': '.',
-             'comma': ','}})
+    'keys': [('semi', ';'), ('dot', '.'), ('comma', ',')]
+})
 
 data = [
     # Level 1
@@ -62,6 +63,8 @@ data = [
     ('{var:30}', level4_vars, 'value'),
     ('{list}', level4_vars, 'red,green,blue'),
     ('{list*}', level4_vars, 'red,green,blue'),
+    ('{keys}', level4_vars, 'semi,%3B,dot,.,comma,%2C'),
+    ('{keys*}', level4_vars, 'semi=%3B,dot=.,comma=%2C'),
 ]
 _data = [
     ('{list}', level4_vars, 'red,green,blue'),

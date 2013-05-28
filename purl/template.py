@@ -33,30 +33,36 @@ def truncate(string, num_chars):
 def _split_basic(string):
     """
     Split a string into a list of tuples of the form
-    (key, modifier) where modifier is a function that applies the
+    (key, modifier_char) where modifier is a function that applies the
     appropriate modification to the variable.
     """
     pairs = []
     for word in string.split(','):
         parts = word.split(':', 2)
-        key, modifier = parts[0], identity
+        key, modifier_char = parts[0], None
 
         if len(parts) > 1:
             # Look up the appropriate modifier function
             modifier_char = parts[1]
-            if modifier_char.isdigit():
-                modifier = functools.partial(truncate, num_chars=int(modifier_char))
 
         if word[len(word) - 1] == '*':
             key = word[:len(word) - 1]
+            modifier_char = '*'
 
-        pairs.append((key, modifier))
+        pairs.append((key, modifier_char))
     return pairs
 
 
 def _split_operator(string):
     return _split_basic(string[1:])
 
+# Utils
+
+def flatten(container):
+    list_ = []
+    for pair in container:
+        list_.extend(pair)
+    return list_
 
 def _replace(variables, match):
     expression = match.group(1)
@@ -66,12 +72,28 @@ def _replace(variables, match):
     escape_reserved = functools.partial(quote, safe="/!")
 
     # Format functions
-    def format_default(escape, key, value):
+    # TODO need a better way of handling = formatting
+    def format_default(modifier_char, escape, key, value):
+
+        # Containers need special handling
         if isinstance(value, (list, tuple)):
-            return ",".join(map(escape, value))
+            try:
+                dict(value)
+            except:
+                # Scaler container
+                return ",".join(map(escape, value))
+            else:
+                # Tuple container
+                if modifier_char == '*':
+                    items = ["%s=%s" % (k, escape(v)) for (k,v) in value]
+                    return ",".join(items)
+                else:
+                    items = flatten(value)
+                    return ",".join(map(escape, items))
+
         return escape(value)
 
-    def format_pair(escape, key, value):
+    def format_pair(modifier_char, escape, key, value):
         """
         Format a key, value pair but don't include the equals sign
         when there is no value
@@ -80,7 +102,7 @@ def _replace(variables, match):
             return key
         return '%s=%s' % (key, escape(value))
 
-    def format_pair_equals(escape, key, value):
+    def format_pair_equals(modifier_char, escape, key, value):
         """
         Format a key, value pair including the equals sign
         when there is no value
@@ -105,9 +127,13 @@ def _replace(variables, match):
         expression[0], default)
 
     replacements = []
-    for key, modifier in split(expression):
+    for key, modifier_char in split(expression):
+        # Modifier chars are pesky as they affect different things.  Some cause
+        # the variable to be truncated.  Other's affect list formatting.
         if key in variables:
-            variable = modifier(variables[key])
-            replacement = format(escape, key, variable)
+            variable = variables[key]
+            if modifier_char and modifier_char.isdigit():
+                variable = variable[:int(modifier_char)]
+            replacement = format(modifier_char, escape, key, variable)
             replacements.append(replacement)
     return prefix + separator.join(replacements)
