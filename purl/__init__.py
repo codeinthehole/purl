@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 
 __title__ = 'purl'
-__version__ = '0.6'
+__version__ = '0.7-dev'
 __author__ = 'David Winterbottom'
 __license__ = 'MIT'
 
@@ -12,6 +12,10 @@ except ImportError:
     from urlparse import parse_qs, urlparse
 from collections import namedtuple
 
+try:
+    import six
+except:
+    pass
 
 # Python 2/3 compatibility
 import sys
@@ -30,10 +34,26 @@ else:
 _URLTuple = namedtuple("_URLTuple", "host username password scheme port path query fragment")
 
 
+def decode_string(raw_string):
+    return raw_string.decode('utf8')
+
+
+def decode_dict(raw_dict):
+    decoded = {}
+    for key, value in raw_dict.items():
+        decoded[key.decode('utf8')] = map(
+            decode_string, value)
+    return decoded
+
+
 def parse(url_str):
     """
     Extract all parts from a URL string and return them as a dictionary
     """
+    # In Py3, we must pass unicode not bytes
+    if isinstance(url_str, six.binary_type):
+        url_str = url_str.decode('utf8')
+
     result = urlparse(url_str)
     netloc_parts = result.netloc.split('@')
     if len(netloc_parts) == 1:
@@ -79,8 +99,6 @@ class URL(object):
     def __init__(self, url_str=None, host=None, username=None, password=None,
                  scheme=None, port=None, path=None, query=None, fragment=None):
         if url_str is not None:
-            if isinstance(url_str, unicode):
-                url_str = url_str.encode('ascii')
             params = parse(url_str)
         else:
             # Defaults
@@ -378,6 +396,13 @@ class URL(object):
         if value is not None:
             return URL._mutate(self, query=urlencode(value, doseq=True))
         query = '' if self._tuple.query is None else self._tuple.query
+
+        # In Python 2.6, urlparse needs a byte string
+        if not PY3:
+            query = query.encode('utf8')
+            result = parse_qs(query, True)
+            return decode_dict(result)
+
         return parse_qs(query, True)
 
     def remove_query_param(self, key, value=None):

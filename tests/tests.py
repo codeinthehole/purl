@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 from unittest import TestCase
 import pickle
-import urllib
+
+try:
+    from urllib.parse import quote
+except ImportError:
+    from urllib import quote
 
 from purl import URL
 
@@ -183,21 +188,21 @@ class SimpleExtractionTests(TestCase):
 
 class UnicodeExtractionTests(TestCase):
     def setUp(self):
-        self.unicode_param = u'значение'
-        self.urlencoded_param = urllib.quote(
-            self.unicode_param.encode('utf8'))
+        self.unicode_param = 'значение'
+        # Python 2.6 requires bytes for quote
+        self.urlencoded_param = quote(self.unicode_param.encode('utf8'))
         url = 'http://www.google.com/blog/article/1?q=' + self.urlencoded_param
-        self.ascii_url = URL.from_string(url)
+        self.ascii_url = URL.from_string(url.encode('ascii'))
         # django request.get_full_path() returns url as unicode
-        self.unicode_url = URL.from_string(unicode(url))
+        self.unicode_url = URL.from_string(url)
 
     def test_get_query_param_ascii_url(self):
-        params = self.ascii_url.query_params()
-        self.assertEqual(params['q'][0].decode('utf8'), self.unicode_param)
+        param = self.ascii_url.query_param('q')
+        self.assertEqual(param, self.unicode_param)
 
     def test_get_query_param_unicode_url(self):
-        params = self.unicode_url.query_params()
-        self.assertEqual(params['q'][0].decode('utf8'), self.unicode_param)
+        param = self.unicode_url.query_param('q')
+        self.assertEqual(param, self.unicode_param)
 
 
 class NoTrailingSlashTests(TestCase):

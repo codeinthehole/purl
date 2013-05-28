@@ -11,6 +11,7 @@ setup(name='purl',
       author="David Winterbottom",
       author_email="david.winterbottom@gmail.com",
       packages=find_packages(exclude=['tests']),
+      install_requires=['six'],
       include_package_data=True,
       package_data={'': ['LICENSE']},
       )
