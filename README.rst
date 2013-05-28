@@ -3,7 +3,16 @@ purl - A simple Python URL class
 ================================
 
 A simple, immutable URL class with a clean API for interrogation and
-manipulation.
+manipulation.  Supports Python 2.7 and 3.3.
+
+.. image:: https://secure.travis-ci.org/codeinthehole/purl.png
+    :target: https://travis-ci.org/codeinthehole/purl
+
+.. image:: https://pypip.in/v/purl/badge.png
+    :target: https://crate.io/packages/purl/
+
+.. image:: https://pypip.in/d/purl/badge.png
+    :target: https://crate.io/packages/purl/
 
 Docs
 ----
@@ -112,11 +121,17 @@ method for adding a segment at the end of the current path::
 Couple of other things:
 
 * Since the URL class is immutable it can be used as a key in a dictionary
-* It can be picked and restored
+* It can be pickled and restored
 * It supports equality operations
 
 Changelog
 ---------
+
+v0.7
+~~~~
+
+* All internal strings are unicode.
+* Support for unicode query params added.
 
 v0.6
 ~~~~
@@ -163,16 +178,19 @@ Contribute
 
 Clone and install testing dependencies::
 
-    pip install -r requirements.txt
+    $ python setup.py develop 
+    $ pip install -r requirements.txt
 
 Ensure tests pass::
 
-    ./runtests.sh
+    $ ./runtests.sh
 
-Hack away
+Or using tox::
+
+    $ tox
+
+Hack away.
 
 Build status
 ------------
 
-.. image:: https://secure.travis-ci.org/codeinthehole/purl.png
-    :target: https://travis-ci.org/codeinthehole/purl
