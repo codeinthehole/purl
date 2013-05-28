@@ -43,7 +43,7 @@ Interrogate::
 
     >>> u = URL(u'https://www.google.com/search?q=testing')
     >>> u.scheme()
-    'https'
+    u'https'
     >>> u.host()
     u'www.google.com'
     >>> u.domain()
@@ -54,9 +54,9 @@ Interrogate::
     u'www.google.com'
     >>> u.port()
     >>> u.path()
-    '/search'
+    u'/search'
     >>> u.query()
-    'q=testing'
+    u'q=testing'
     >>> u.fragment()
     ''
     >>> u.path_segment(0)
@@ -64,13 +64,13 @@ Interrogate::
     >>> u.path_segments()
     (u'search',)
     >>> u.query_param('q')
-    'testing'
+    u'testing'
     >>> u.query_param('q', as_list=True)
-    ['testing']
+    [u'testing']
     >>> u.query_param('lang', default=u'GB')
     u'GB'
     >>> u.query_params()
-    {'q': ['testing']}
+    {u'q': [u'testing']}
     >>> u.has_query_param('q')
     True
     >>> u.has_query_params(('q', 'r'))
