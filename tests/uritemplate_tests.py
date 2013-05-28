@@ -14,6 +14,12 @@ level3_vars.update({
     'x': '1024',
     'y': '768'
 })
+level4_vars = level2_vars.copy()
+level4_vars.update({
+    'list': ['red', 'green', 'blue'],
+    'keys': {'semi': ';',
+             'dot': '.',
+             'comma': ','}})
 
 data = [
     # Level 1
@@ -51,6 +57,14 @@ data = [
     # Level 3 - form-style query continuation
     ('?fixed=yes{&x}', level3_vars, '?fixed=yes&x=1024'),
     ('{&x,y,empty}', level3_vars, '&x=1024&y=768&empty='),
+    # Level 4 - string expansion with value modifiers
+    ('{var:3}', level4_vars, 'val'),
+    ('{var:30}', level4_vars, 'value'),
+    ('{list}', level4_vars, 'red,green,blue'),
+    ('{list*}', level4_vars, 'red,green,blue'),
+]
+_data = [
+    ('{list}', level4_vars, 'red,green,blue'),
 ]
 
 
