@@ -417,18 +417,17 @@ class URL(object):
 class Template(object):
 
     def __init__(self, url_str):
-        self._base = URL(url_str)
+        self._base = url_str
 
     def expand(self, variables=None):
         if variables is None:
             variables = {}
         regexp = re.compile("{([^\}]+)}")
         url = regexp.sub(functools.partial(self._replace, variables),
-                         self._base.as_string())
+                         self._base)
         return URL(url)
 
     def _replace(self, variables, match):
-
         expression = match.group(1)
 
         # Escaping functions (don't need to be in method body)
@@ -444,6 +443,8 @@ class Template(object):
             '+': ('', ',', split_operator, escape_reserved),
             '#': ('#', ',', split_operator, escape_reserved),
             '.': ('.', '.', split_operator, escape_all),
+            '/': ('/', '/', split_operator, escape_all),
+            ';': (';', ';', split_operator, escape_all),
         }
         default = ('', ',', split_basic, escape_all)
         prefix, separator, split, escape = operators.get(expression[0], default)
@@ -452,5 +453,4 @@ class Template(object):
         for key in split(expression):
             if key in variables:
                 replacements.append(escape(variables[key]))
-
         return prefix + separator.join(replacements)

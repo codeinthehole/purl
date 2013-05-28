@@ -1,6 +1,6 @@
 from nose.tools import eq_
 
-import purl
+from purl.template import expand
 
 # Define variables as in the RFC (http://tools.ietf.org/html/rfc6570)
 level2_vars = {
@@ -39,23 +39,25 @@ data = [
     # Level 3 - label expansion
     ('X{.var}', level3_vars, 'X.value'),
     ('X{.x,y}', level3_vars, 'X.1024.768'),
+    # Level 3 - path segments, slash prefixed
+    ('{/var}', level3_vars, '/value'),
+    ('{/var,x}/here', level3_vars, '/value/1024/here'),
+    # Level 3 - path segments, semi-colon prefixed
+    ('{;x,y}', level3_vars, ';x=1024;y=768'),
+    ('{;x,y,empty}', level3_vars, ';x=1024;y=768;empty'),
+    # Level 3 - form-style query, ampersand-separated
+    ('{?x,y}', level3_vars, '?x=1024&y=768'),
+    ('{?x,y,empty}', level3_vars, '?x=1024&y=768&empty='),
+    # Level 3 - form-style query continuation
+    ('?fixed=yes{&x}', level3_vars, '?fixed=yes&x=1024'),
+    ('{&x,y,empty}', level3_vars, '&x=1024&y=768&empty='),
 ]
 
-old = [
-    # Form-style
-    ('http://example.com/foo{?query,number}', {'query': 'mycelium', 'number': 100}, 'http://example.com/foo?query=mycelium&number=100'),
-    ('http://example.com/foo{?query,number}', {'number': 100}, 'http://example.com/foo?number=100'),
-    ('http://example.com/foo{?query,number}', {}, 'http://example.com/foo'),
-    ('http://example.com/foo{?query,number}', None, 'http://example.com/foo'),
-]
 
-
-def expand(template, fields, expected):
-    t = purl.Template(template)
-    url = t.expand(fields)
-    eq_(url.as_string(), expected)
+def assert_expansion(template, fields, expected):
+    eq_(expand(template, fields), expected)
 
 
 def test_expansion():
     for template, fields, expected in data:
-        yield expand, template, fields, expected
+        yield assert_expansion, template, fields, expected
