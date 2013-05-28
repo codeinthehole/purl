@@ -8,14 +8,11 @@ except ImportError:
 from collections import namedtuple
 import sys
 
-import six
-
-if six.PY3:
-    def as_bytes(s):
-        return s
-else:
-    def as_bytes(s):
-        return s.encode('utf8')
+try:
+    import six
+except ImportError:
+    # Triggered when installing for the first time when six isn't installed yet
+    pass
 
 
 # To minimise memory consumption, we use a namedtuple to store all instance
