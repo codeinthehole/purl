@@ -1,23 +1,20 @@
 from __future__ import unicode_literals
 
 try:
-    from urllib.parse import parse_qs, urlencode, urlparse
+    from urllib.parse import parse_qs, urlencode, urlparse, quote, unquote
 except ImportError:
-    from urllib import urlencode
+    from urllib import urlencode, quote, unquote
     from urlparse import parse_qs, urlparse
 from collections import namedtuple
 import sys
 
-try:
-    import six
-except ImportError:
-    # Triggered when installing for the first time when six isn't installed yet
-    pass
+import six
 
 
 # To minimise memory consumption, we use a namedtuple to store all instance
 # variables, as well as using the __slots__ attribute.
-_URLTuple = namedtuple("_URLTuple", "host username password scheme port path query fragment")
+_URLTuple = namedtuple(
+    "_URLTuple", "host username password scheme port path query fragment")
 
 
 # Encoding helpers
@@ -55,7 +52,17 @@ def dict_to_unicode(raw_dict):
     return decoded
 
 
-def encode(query, doseq=True):
+def unicode_quote(string, safe='/'):
+    return quote(to_utf8(string), to_utf8(safe))
+
+
+def unicode_unquote(string):
+    if six.PY3:
+        return unquote(string)
+    return to_unicode(unquote(to_utf8(string)))
+
+
+def unicode_urlencode(query, doseq=True):
     """
     Custom wrapper around urlencode to support unicode
 
@@ -78,9 +85,7 @@ def parse(url_str):
     """
     Extract all parts from a URL string and return them as a dictionary
     """
-    # In Py3, we must pass unicode not bytes
-    if isinstance(url_str, six.binary_type):
-        url_str = url_str.decode('utf8')
+    url_str = to_unicode(url_str)
 
     result = urlparse(url_str)
     netloc_parts = result.netloc.split('@')
@@ -338,12 +343,14 @@ class URL(object):
         :param list value: the new path segments to use
         """
         if value is not None:
-            new_path = '/' + '/'.join(value)
+            encoded_values = map(unicode_quote, value)
+            new_path = '/' + '/'.join(encoded_values)
             return URL._mutate(self, path=new_path)
         parts = self._tuple.path.split('/')
         segments = parts[1:]
         if self._tuple.path.endswith('/'):
             segments.pop()
+        segments = map(unicode_unquote, segments)
         return tuple(segments)
 
     def add_path_segment(self, value):
@@ -395,7 +402,8 @@ class URL(object):
         parse_result = self.query_params()
         if value is not None:
             parse_result[key] = value
-            return URL._mutate(self, query=encode(parse_result, doseq=True))
+            return URL._mutate(
+                self, query=unicode_urlencode(parse_result, doseq=True))
 
         try:
             result = parse_result[key]
@@ -423,7 +431,7 @@ class URL(object):
         :param dict value: new dictionary of values
         """
         if value is not None:
-            return URL._mutate(self, query=encode(value, doseq=True))
+            return URL._mutate(self, query=unicode_urlencode(value, doseq=True))
         query = '' if self._tuple.query is None else self._tuple.query
 
         # In Python 2.6, urlparse needs a bytestring so we encode and then
@@ -449,7 +457,7 @@ class URL(object):
             del parse_result[key][index]
         else:
             del parse_result[key]
-        return URL._mutate(self, query=encode(parse_result, doseq=True))
+        return URL._mutate(self, query=unicode_urlencode(parse_result, doseq=True))
 
     @classmethod
     def _mutate(cls, url, **kwargs):

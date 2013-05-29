@@ -377,6 +377,18 @@ class UnicodeTests(TestCase):
         url = self.base.append_query_param('q', self.bytes)
         self.assertEqual(self.text, url.query_param('q'))
 
-    def test_set_query_params(self):
+    def test_set_unicode_query_params(self):
         url = self.base.query_params({'q': self.text})
         self.assertEqual(self.text, url.query_param('q'))
+
+    def test_set_bytestring_query_params(self):
+        url = self.base.query_params({'q': self.bytes})
+        self.assertEqual(self.text, url.query_param('q'))
+
+    def test_add_unicode_path_segment(self):
+        url = self.base.add_path_segment(self.text)
+        self.assertEqual(self.text, url.path_segment(0))
+
+    def test_add_bytestring_path_segment(self):
+        url = self.base.add_path_segment(self.bytes)
+        self.assertEqual(self.text, url.path_segment(0))
