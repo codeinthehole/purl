@@ -131,7 +131,7 @@ v0.7
 ~~~~
 
 * All internal strings are unicode.
-* Support for unicode query params added.
+* Support for unicode chars in path, fragment, query, auth added.
 
 v0.6
 ~~~~
