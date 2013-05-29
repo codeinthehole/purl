@@ -190,7 +190,3 @@ Or using tox::
     $ tox
 
 Hack away.
-
-Build status
-------------
-

@@ -20,29 +20,56 @@ except ImportError:
 _URLTuple = namedtuple("_URLTuple", "host username password scheme port path query fragment")
 
 
-def decode_string(bytes):
-    return bytes.decode('utf8')
+# Encoding helpers
 
 
-def decode_dict(raw_dict):
+def to_unicode(string):
+    """
+    Ensure a passed string is unicode
+    """
+    if isinstance(string, six.binary_type):
+        return string.decode('utf8')
+    return string
+
+
+def to_utf8(string):
+    """
+    Encode a string as a UTF8 bytestring.  This function could be passed a
+    bytestring or unicode string so must distinguish between the two.
+    """
+    if isinstance(string, six.text_type):
+        return string.encode('utf8')
+    return string
+
+
+def dict_to_unicode(raw_dict):
+    """
+    Ensure all keys and values in a dict are unicode.
+
+    The passed dict is assumed to have lists for all values.
+    """
     decoded = {}
     for key, value in raw_dict.items():
-        decoded[key.decode('utf8')] = map(
-            decode_string, value)
+        decoded[to_unicode(key)] = map(
+            to_unicode, value)
     return decoded
 
 
 def encode(query, doseq=True):
     """
     Custom wrapper around urlencode to support unicode
+
+    Python urlencode doesn't handle unicode well so we need to convert to
+    bytestrings before using it:
+    http://stackoverflow.com/questions/6480723/urllib-urlencode-doesnt-like-unicode-values-how-about-this-workaround
     """
     pairs = []
     for key, value in query.items():
         if isinstance(value, list):
-            value = list(map(lambda x: x.encode('utf8'), value))
+            value = list(map(to_utf8, value))
         else:
-            value = value.encode('utf8')
-        pairs.append((key.encode('utf8'), value))
+            value = to_utf8(value)
+        pairs.append((to_utf8(key), value))
     encoded_query = dict(pairs)
     return urlencode(encoded_query, doseq)
 
@@ -399,12 +426,11 @@ class URL(object):
             return URL._mutate(self, query=encode(value, doseq=True))
         query = '' if self._tuple.query is None else self._tuple.query
 
-        # In Python 2.6, urlparse needs a byte string so we encode and then
+        # In Python 2.6, urlparse needs a bytestring so we encode and then
         # decode the result.
         if not six.PY3:
-            query = query.encode('utf8')
-            result = parse_qs(query, True)
-            return decode_dict(result)
+            result = parse_qs(to_utf8(query), True)
+            return dict_to_unicode(result)
 
         return parse_qs(query, True)
 

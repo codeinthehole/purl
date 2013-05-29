@@ -187,25 +187,6 @@ class SimpleExtractionTests(TestCase):
         self.assertEqual(('blog', 'article', '1'), self.url.path_segments())
 
 
-class UnicodeExtractionTests(TestCase):
-    def setUp(self):
-        self.unicode_param = 'значение'
-        # Python 2.6 requires bytes for quote
-        self.urlencoded_param = quote(self.unicode_param.encode('utf8'))
-        url = 'http://www.google.com/blog/article/1?q=' + self.urlencoded_param
-        self.ascii_url = URL.from_string(url.encode('ascii'))
-        # django request.get_full_path() returns url as unicode
-        self.unicode_url = URL.from_string(url)
-
-    def test_get_query_param_ascii_url(self):
-        param = self.ascii_url.query_param('q')
-        self.assertEqual(param, self.unicode_param)
-
-    def test_get_query_param_unicode_url(self):
-        param = self.unicode_url.query_param('q')
-        self.assertEqual(param, self.unicode_param)
-
-
 class NoTrailingSlashTests(TestCase):
 
     def test_path_extraction_without_trailing_slash(self):
@@ -346,22 +327,54 @@ class QueryParamListTests(TestCase):
         self.assertEqual(['c'], values)
 
 
+class UnicodeExtractionTests(TestCase):
+    def setUp(self):
+        self.unicode_param = 'значение'
+        # Python 2.6 requires bytes for quote
+        self.urlencoded_param = quote(self.unicode_param.encode('utf8'))
+        url = 'http://www.google.com/blog/article/1?q=' + self.urlencoded_param
+        self.ascii_url = URL.from_string(url.encode('ascii'))
+        # django request.get_full_path() returns url as unicode
+        self.unicode_url = URL.from_string(url)
+
+    def test_get_query_param_ascii_url(self):
+        param = self.ascii_url.query_param('q')
+        self.assertEqual(param, self.unicode_param)
+
+    def test_get_query_param_unicode_url(self):
+        param = self.unicode_url.query_param('q')
+        self.assertEqual(param, self.unicode_param)
+
+
 class UnicodeTests(TestCase):
 
     def setUp(self):
         self.base = URL('http://127.0.0.1/')
         self.text = u'ć'
+        self.bytes = self.text.encode('utf8')
 
-    def test_set_query_param_value(self):
+    def test_set_unicode_query_param_value(self):
         url = self.base.query_param('q', self.text)
         self.assertEqual(self.text, url.query_param('q'))
 
-    def test_set_query_param_key(self):
+    def test_set_bytestring_query_param_value(self):
+        url = self.base.query_param('q', self.bytes)
+        self.assertEqual(self.text, url.query_param('q'))
+
+    def test_set_unicode_query_param_key(self):
         url = self.base.query_param(self.text, 'value')
         self.assertEqual('value', url.query_param(self.text))
 
-    def test_append_query_param(self):
+    def test_set_bytestring_query_param_key(self):
+        url = self.base.query_param(self.bytes, 'value')
+        self.assertEqual('value', url.query_param(self.text))
+
+    def test_append_unicode_query_param(self):
         url = self.base.append_query_param('q', self.text)
+        self.assertEqual(self.text, url.query_param('q'))
+
+    def test_append_bytestring_query_param(self):
+        url = self.base.append_query_param('q', self.bytes)
         self.assertEqual(self.text, url.query_param('q'))
 
     def test_set_query_params(self):
