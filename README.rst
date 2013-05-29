@@ -67,7 +67,7 @@ Interrogate::
     >>> u.query()
     u'q=testing'
     >>> u.fragment()
-    ''
+    u''
     >>> u.path_segment(0)
     u'search'
     >>> u.path_segments()

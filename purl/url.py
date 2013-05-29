@@ -53,10 +53,14 @@ def dict_to_unicode(raw_dict):
 
 
 def unicode_quote(string, safe='/'):
+    if string is None:
+        return None
     return quote(to_utf8(string), to_utf8(safe))
 
 
 def unicode_unquote(string):
+    if string is None:
+        return Nonek
     if six.PY3:
         return unquote(string)
     return to_unicode(unquote(to_utf8(string)))
@@ -149,14 +153,15 @@ class URL(object):
             if locals()[var] is not None:
                 params[var] = locals()[var]
 
+        # Store the various components in %-encoded form
         self._tuple = _URLTuple(params['host'],
-                                params['username'],
-                                params['password'],
+                                unicode_quote(params['username']),
+                                unicode_quote(params['password']),
                                 params['scheme'],
                                 params['port'],
                                 params['path'],
                                 params['query'],
-                                params['fragment'])
+                                unicode_quote(params['fragment']))
 
     def __eq__(self, other):
         return self._tuple == other._tuple
@@ -222,13 +227,13 @@ class URL(object):
         """
         Return the username
         """
-        return self._tuple.username
+        return unicode_unquote(self._tuple.username)
 
     def password(self):
         """
         Return the password
         """
-        return self._tuple.password
+        return unicode_unquote(self._tuple.password)
 
     def subdomains(self, value=None):
         """
@@ -310,7 +315,7 @@ class URL(object):
         """
         if value:
             return URL._mutate(self, fragment=value)
-        return self._tuple.fragment
+        return unicode_unquote(self._tuple.fragment)
 
     # ====
     # Path
