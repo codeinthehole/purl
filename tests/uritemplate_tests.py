@@ -71,6 +71,12 @@ data = [
     ('{+list*}', level4_vars, 'red,green,blue'),
     ('{+keys}', level4_vars, 'semi,;,dot,.,comma,,'),
     ('{+keys*}', level4_vars, 'semi=;,dot=.,comma=,'),
+    # Level 4 - fragment expansion with value modifiers
+    ('{#path:6}/here', level4_vars, '#/foo/b/here'),
+    ('{#list}', level4_vars, '#red,green,blue'),
+    ('{#list*}', level4_vars, '#red,green,blue'),
+    ('{#keys}', level4_vars, '#semi,;,dot,.,comma,,'),
+    ('{#keys*}', level4_vars, '#semi=;,dot=.,comma=,'),
 ]
 _data = [
     ('{list}', level4_vars, 'red,green,blue'),
