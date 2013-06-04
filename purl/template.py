@@ -64,12 +64,13 @@ def flatten(container):
         list_.extend(pair)
     return list_
 
+
 def _replace(variables, match):
     expression = match.group(1)
 
     # Escaping functions (don't need to be in method body)
     escape_all = functools.partial(quote, safe="/")
-    escape_reserved = functools.partial(quote, safe="/!")
+    escape_reserved = functools.partial(quote, safe="/!,.;")
 
     # Format functions
     # TODO need a better way of handling = formatting
@@ -80,7 +81,7 @@ def _replace(variables, match):
             try:
                 dict(value)
             except:
-                # Scaler container
+                # Scalar container
                 return ",".join(map(escape, value))
             else:
                 # Tuple container
