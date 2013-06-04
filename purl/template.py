@@ -74,7 +74,11 @@ def _replace(variables, match):
 
     # Format functions
     # TODO need a better way of handling = formatting
-    def format_default(modifier_char, escape, key, value):
+    def format_default(modifier_char, separator, escape, key, value):
+
+        join_char = ","
+        if modifier_char == '*':
+            join_char = separator
 
         # Containers need special handling
         if isinstance(value, (list, tuple)):
@@ -82,19 +86,19 @@ def _replace(variables, match):
                 dict(value)
             except:
                 # Scalar container
-                return ",".join(map(escape, value))
+                return join_char.join(map(escape, value))
             else:
                 # Tuple container
                 if modifier_char == '*':
                     items = ["%s=%s" % (k, escape(v)) for (k,v) in value]
-                    return ",".join(items)
+                    return join_char.join(items)
                 else:
                     items = flatten(value)
-                    return ",".join(map(escape, items))
+                    return join_char.join(map(escape, items))
 
         return escape(value)
 
-    def format_pair(modifier_char, escape, key, value):
+    def format_pair(modifier_char, separator, escape, key, value):
         """
         Format a key, value pair but don't include the equals sign
         when there is no value
@@ -103,7 +107,7 @@ def _replace(variables, match):
             return key
         return '%s=%s' % (key, escape(value))
 
-    def format_pair_equals(modifier_char, escape, key, value):
+    def format_pair_equals(modifier_char, separator, escape, key, value):
         """
         Format a key, value pair including the equals sign
         when there is no value
@@ -135,6 +139,6 @@ def _replace(variables, match):
             variable = variables[key]
             if modifier_char and modifier_char.isdigit():
                 variable = variable[:int(modifier_char)]
-            replacement = format(modifier_char, escape, key, variable)
+            replacement = format(modifier_char, separator, escape, key, variable)
             replacements.append(replacement)
     return prefix + separator.join(replacements)

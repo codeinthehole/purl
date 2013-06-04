@@ -77,9 +77,15 @@ data = [
     ('{#list*}', level4_vars, '#red,green,blue'),
     ('{#keys}', level4_vars, '#semi,;,dot,.,comma,,'),
     ('{#keys*}', level4_vars, '#semi=;,dot=.,comma=,'),
+    # Level 4 - label expansion, dot-prefixed
+    ('X{.var:3}', level4_vars, 'X.val'),
+    ('X{.list}', level4_vars, 'X.red,green,blue'),
+    ('X{.list*}', level4_vars, 'X.red.green.blue'),
+    ('X{.keys}', level4_vars, 'X.semi,%3B,dot,.,comma,%2C'),
+    ('X{.keys*}', level4_vars, 'X.semi=%3B.dot=..comma=%2C'),
 ]
 _data = [
-    ('{list}', level4_vars, 'red,green,blue'),
+    ('X{.list*}', level4_vars, 'X.red.green.blue'),
 ]
 
 
