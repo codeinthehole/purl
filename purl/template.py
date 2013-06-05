@@ -69,13 +69,12 @@ def _replace(variables, match):
     expression = match.group(1)
 
     # Escaping functions (don't need to be in method body)
-    escape_all = functools.partial(quote, safe="/")
+    escape_all = functools.partial(quote, safe="")
     escape_reserved = functools.partial(quote, safe="/!,.;")
 
     # Format functions
     # TODO need a better way of handling = formatting
     def format_default(modifier_char, separator, escape, key, value):
-
         join_char = ","
         if modifier_char == '*':
             join_char = separator

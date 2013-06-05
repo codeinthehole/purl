@@ -83,9 +83,16 @@ data = [
     ('X{.list*}', level4_vars, 'X.red.green.blue'),
     ('X{.keys}', level4_vars, 'X.semi,%3B,dot,.,comma,%2C'),
     ('X{.keys*}', level4_vars, 'X.semi=%3B.dot=..comma=%2C'),
+    # Level 4 - path segments, slash-prefixed
+    ('{/var:1,var}', level4_vars, '/v/value'),
+    ('{/list}', level4_vars, '/red,green,blue'),
+    ('{/list*}', level4_vars, '/red/green/blue'),
+    ('{/list*,path:4}', level4_vars, '/red/green/blue/%2Ffoo'),
+    ('{/keys}', level4_vars, '/semi,%3B,dot,.,comma,%2C'),
+    ('{/keys*}', level4_vars, '/semi=%3B/dot=./comma=%2C'),
 ]
 _data = [
-    ('X{.list*}', level4_vars, 'X.red.green.blue'),
+    ('{/list*,path:4}', level4_vars, '/red/green/blue/%2Ffoo'),
 ]
 
 
