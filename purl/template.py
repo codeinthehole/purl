@@ -104,7 +104,32 @@ def _replace(variables, match):
         """
         if not value:
             return key
-        return '%s=%s' % (key, escape(value))
+
+        if isinstance(value, (list, tuple)):
+            join_char = ","
+            if modifier_char == '*':
+                join_char = separator
+            try:
+                dict(value)
+            except:
+                # Scalar container
+                if modifier_char == '*':
+                    items = ["%s=%s" % (key, escape(v)) for v in value]
+                    return join_char.join(items)
+                else:
+                    escaped_value = join_char.join(map(escape, value))
+            else:
+                # Dict value
+                if modifier_char == '*':
+                    items = ["%s=%s" % (k, escape(v)) for (k,v) in value]
+                    return join_char.join(items)
+                else:
+                    items = flatten(value)
+                    escaped_value = join_char.join(map(escape, items))
+
+        else:
+            escaped_value = escape(value)
+        return '%s=%s' % (key, escaped_value)
 
     def format_pair_equals(modifier_char, separator, escape, key, value):
         """
