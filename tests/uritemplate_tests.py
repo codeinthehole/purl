@@ -102,6 +102,12 @@ data = [
     ('{?list*}', level4_vars, '?list=red&list=green&list=blue'),
     ('{?keys}', level4_vars, '?keys=semi,%3B,dot,.,comma,%2C'),
     ('{?keys*}', level4_vars, '?semi=%3B&dot=.&comma=%2C'),
+    # Level 4 - form-sytyle query continuation
+    ('{&var:3}', level4_vars, '&var=val'),
+    ('{&list}', level4_vars, '&list=red,green,blue'),
+    ('{&list*}', level4_vars, '&list=red&list=green&list=blue'),
+    ('{&keys}', level4_vars, '&keys=semi,%3B,dot,.,comma,%2C'),
+    ('{&keys*}', level4_vars, '&semi=%3B&dot=.&comma=%2C'),
 ]
 _data = [
     ('{;list}', level4_vars, ';list=red,green,blue'),
