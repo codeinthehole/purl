@@ -21,7 +21,6 @@ def expand(template, variables=None):
     return regexp.sub(functools.partial(_replace, variables), template)
 
 
-
 # Modifiers
 
 identity = lambda x: x
@@ -138,7 +137,32 @@ def _replace(variables, match):
         """
         if not value:
             value = ''
-        return '%s=%s' % (key, escape(value))
+
+        if isinstance(value, (list, tuple)):
+            join_char = ","
+            if modifier_char == '*':
+                join_char = separator
+            try:
+                dict(value)
+            except:
+                # Scalar container
+                if modifier_char == '*':
+                    items = ["%s=%s" % (key, escape(v)) for v in value]
+                    return join_char.join(items)
+                else:
+                    escaped_value = join_char.join(map(escape, value))
+            else:
+                # Dict value
+                if modifier_char == '*':
+                    items = ["%s=%s" % (k, escape(v)) for (k,v) in value]
+                    return join_char.join(items)
+                else:
+                    items = flatten(value)
+                    escaped_value = join_char.join(map(escape, items))
+        else:
+            escaped_value = escape(value)
+
+        return '%s=%s' % (key, escaped_value)
 
     # operator -> (prefix, separator, split, escape)
     # TODO module level
