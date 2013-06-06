@@ -11,182 +11,176 @@ except ImportError:
 __all__ = ['expand']
 
 
+patterns = re.compile("{([^\}]+)}")
+
+
 def expand(template, variables=None):
     """
-    Expand a URL template
+    Expand a URL template string using the passed variables
     """
     if variables is None:
         variables = {}
-    regexp = re.compile("{([^\}]+)}")
-    return regexp.sub(functools.partial(_replace, variables), template)
+    return patterns.sub(functools.partial(_replace, variables), template)
 
 
-# Modifiers
+# Utils
 
-identity = lambda x: x
+def _flatten(container):
+    """
+    _flatten a sequence of sequences into a single list
+    """
+    _flattened = []
+    for sequence in container:
+        _flattened.extend(sequence)
+    return _flattened
 
-def truncate(string, num_chars):
+# Format functions
+# ----------------
+# These are responsible for formatting the (key, value) pair into a string
+
+def _format_pair_no_equals(explode, separator, escape, key, value):
+    """
+    Format a key, value pair but don't include the equals sign
+    when there is no value
+    """
+    if not value:
+        return key
+    return _format_pair(explode, separator, escape, key, value)
+
+
+def _format_pair_with_equals(explode, separator, escape, key, value):
+    """
+    Format a key, value pair including the equals sign
+    when there is no value
+    """
+    if not value:
+        return key + '='
+    return _format_pair(explode, separator, escape, key, value)
+
+def _format_pair(explode, separator, escape, key, value):
+    if isinstance(value, (list, tuple)):
+        join_char = ","
+        if explode:
+            join_char = separator
+        try:
+            dict(value)
+        except:
+            # Scalar container
+            if explode:
+                items = ["%s=%s" % (key, escape(v)) for v in value]
+                return join_char.join(items)
+            else:
+                escaped_value = join_char.join(map(escape, value))
+        else:
+            # Tuple container
+            if explode:
+                items = ["%s=%s" % (k, escape(v)) for (k,v) in value]
+                return join_char.join(items)
+            else:
+                items = _flatten(value)
+                escaped_value = join_char.join(map(escape, items))
+    else:
+        escaped_value = escape(value)
+    return '%s=%s' % (key, escaped_value)
+
+def _format_default(explode, separator, escape, key, value):
+    if isinstance(value, (list, tuple)):
+        join_char = ","
+        if explode:
+            join_char = separator
+        try:
+            dict(value)
+        except:
+            # Scalar container
+            escaped_value = join_char.join(map(escape, value))
+        else:
+            # Tuple container
+            if explode:
+                items = ["%s=%s" % (k, escape(v)) for (k,v) in value]
+                escaped_value = join_char.join(items)
+            else:
+                items = _flatten(value)
+                escaped_value = join_char.join(map(escape, items))
+    else:
+        escaped_value = escape(value)
+    return escaped_value
+
+
+# Modifer functions
+# -----------------
+# These are responsible for modifying the variable before formatting
+
+_identity = lambda x: x
+
+def _truncate(string, num_chars):
     return string[:num_chars]
 
+# Splitting functions
+# -------------------
+# These are responsible for splitting a string into a sequence of (key,
+# modifier) tuples
 
 def _split_basic(string):
     """
     Split a string into a list of tuples of the form
-    (key, modifier_char) where modifier is a function that applies the
+    (key, modifier_fn, explode) where modifier_fn is a function that applies the
     appropriate modification to the variable.
     """
-    pairs = []
+    tuples = []
     for word in string.split(','):
+        # Attempt to split on colon
         parts = word.split(':', 2)
-        key, modifier_char = parts[0], None
-
+        key, modifier_fn, explode = parts[0], _identity, False
         if len(parts) > 1:
-            # Look up the appropriate modifier function
-            modifier_char = parts[1]
-
+            modifier_fn = functools.partial(
+                _truncate, num_chars=int(parts[1]))
         if word[len(word) - 1] == '*':
             key = word[:len(word) - 1]
-            modifier_char = '*'
-
-        pairs.append((key, modifier_char))
-    return pairs
-
+            explode = True
+        tuples.append((key, modifier_fn, explode))
+    return tuples
 
 def _split_operator(string):
     return _split_basic(string[1:])
 
-# Utils
+# Escaping functions
+# ------------------
+# These are responsible for splitting a string into a sequence of (key,
+# modifier) tuples
 
-def flatten(container):
-    list_ = []
-    for pair in container:
-        list_.extend(pair)
-    return list_
+_escape_all = functools.partial(quote, safe="")
+_escape_reserved = functools.partial(quote, safe="/!,.;")
+
+# Operator map
+# ------------
+# A mapping of:
+#     operator -> (prefix, separator, split_fn, escape_fn, format_fn)
+operator_map = {
+    '+': ('', ',', _split_operator, _escape_reserved, _format_default),
+    '#': ('#', ',', _split_operator, _escape_reserved, _format_default),
+    '.': ('.', '.', _split_operator, _escape_all, _format_default),
+    '/': ('/', '/', _split_operator, _escape_all, _format_default),
+    ';': (';', ';', _split_operator, _escape_all, _format_pair_no_equals),
+    '?': ('?', '&', _split_operator, _escape_all, _format_pair_with_equals),
+    '&': ('&', '&', _split_operator, _escape_all, _format_pair_with_equals),
+}
+defaults = ('', ',', _split_basic, _escape_all, _format_default)
 
 
 def _replace(variables, match):
+    """
+    Return the appropriate replacement for `match` using the passed variables
+    """
     expression = match.group(1)
 
-    # Escaping functions (don't need to be in method body)
-    escape_all = functools.partial(quote, safe="")
-    escape_reserved = functools.partial(quote, safe="/!,.;")
-
-    # Format functions
-    # TODO need a better way of handling = formatting
-    def format_default(modifier_char, separator, escape, key, value):
-        join_char = ","
-        if modifier_char == '*':
-            join_char = separator
-
-        # Containers need special handling
-        if isinstance(value, (list, tuple)):
-            try:
-                dict(value)
-            except:
-                # Scalar container
-                return join_char.join(map(escape, value))
-            else:
-                # Tuple container
-                if modifier_char == '*':
-                    items = ["%s=%s" % (k, escape(v)) for (k,v) in value]
-                    return join_char.join(items)
-                else:
-                    items = flatten(value)
-                    return join_char.join(map(escape, items))
-
-        return escape(value)
-
-    def format_pair(modifier_char, separator, escape, key, value):
-        """
-        Format a key, value pair but don't include the equals sign
-        when there is no value
-        """
-        if not value:
-            return key
-
-        if isinstance(value, (list, tuple)):
-            join_char = ","
-            if modifier_char == '*':
-                join_char = separator
-            try:
-                dict(value)
-            except:
-                # Scalar container
-                if modifier_char == '*':
-                    items = ["%s=%s" % (key, escape(v)) for v in value]
-                    return join_char.join(items)
-                else:
-                    escaped_value = join_char.join(map(escape, value))
-            else:
-                # Dict value
-                if modifier_char == '*':
-                    items = ["%s=%s" % (k, escape(v)) for (k,v) in value]
-                    return join_char.join(items)
-                else:
-                    items = flatten(value)
-                    escaped_value = join_char.join(map(escape, items))
-
-        else:
-            escaped_value = escape(value)
-        return '%s=%s' % (key, escaped_value)
-
-    def format_pair_equals(modifier_char, separator, escape, key, value):
-        """
-        Format a key, value pair including the equals sign
-        when there is no value
-        """
-        if not value:
-            value = ''
-
-        if isinstance(value, (list, tuple)):
-            join_char = ","
-            if modifier_char == '*':
-                join_char = separator
-            try:
-                dict(value)
-            except:
-                # Scalar container
-                if modifier_char == '*':
-                    items = ["%s=%s" % (key, escape(v)) for v in value]
-                    return join_char.join(items)
-                else:
-                    escaped_value = join_char.join(map(escape, value))
-            else:
-                # Dict value
-                if modifier_char == '*':
-                    items = ["%s=%s" % (k, escape(v)) for (k,v) in value]
-                    return join_char.join(items)
-                else:
-                    items = flatten(value)
-                    escaped_value = join_char.join(map(escape, items))
-        else:
-            escaped_value = escape(value)
-
-        return '%s=%s' % (key, escaped_value)
-
-    # operator -> (prefix, separator, split, escape)
-    # TODO module level
-    operators = {
-        '+': ('', ',', _split_operator, escape_reserved, format_default),
-        '#': ('#', ',', _split_operator, escape_reserved, format_default),
-        '.': ('.', '.', _split_operator, escape_all, format_default),
-        '/': ('/', '/', _split_operator, escape_all, format_default),
-        ';': (';', ';', _split_operator, escape_all, format_pair),
-        '?': ('?', '&', _split_operator, escape_all, format_pair_equals),
-        '&': ('&', '&', _split_operator, escape_all, format_pair_equals),
-    }
-    default = ('', ',', _split_basic, escape_all, format_default)
-    prefix, separator, split, escape, format = operators.get(
-        expression[0], default)
+    # Look-up chars and functions for the specified operator
+    prefix_char, separator_char, split_fn, escape_fn, format_fn = operator_map.get(
+        expression[0], defaults)
 
     replacements = []
-    for key, modifier_char in split(expression):
-        # Modifier chars are pesky as they affect different things.  Some cause
-        # the variable to be truncated.  Other's affect list formatting.
+    for key, modify_fn, explode in split_fn(expression):
         if key in variables:
-            variable = variables[key]
-            if modifier_char and modifier_char.isdigit():
-                variable = variable[:int(modifier_char)]
-            replacement = format(modifier_char, separator, escape, key, variable)
+            variable = modify_fn(variables[key])
+            replacement = format_fn(explode, separator_char, escape_fn, key, variable)
             replacements.append(replacement)
-    return prefix + separator.join(replacements)
+    return prefix_char + separator_char.join(replacements)

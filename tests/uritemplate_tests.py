@@ -110,7 +110,7 @@ data = [
     ('{&keys*}', level4_vars, '&semi=%3B&dot=.&comma=%2C'),
 ]
 _data = [
-    ('{;list}', level4_vars, ';list=red,green,blue'),
+    ('{;x,y,empty}', level3_vars, ';x=1024;y=768;empty'),
 ]
 
 
