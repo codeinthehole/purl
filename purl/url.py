@@ -60,7 +60,7 @@ def unicode_quote(string, safe='/'):
 
 def unicode_unquote(string):
     if string is None:
-        return Nonek
+        return None
     if six.PY3:
         return unquote(string)
     return to_unicode(unquote(to_utf8(string)))
