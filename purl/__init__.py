@@ -15,6 +15,8 @@ from collections import namedtuple
 import re
 import functools
 
+from . import template
+
 
 # Python 2/3 compatibility
 import sys
@@ -420,37 +422,4 @@ class Template(object):
         self._base = url_str
 
     def expand(self, variables=None):
-        if variables is None:
-            variables = {}
-        regexp = re.compile("{([^\}]+)}")
-        url = regexp.sub(functools.partial(self._replace, variables),
-                         self._base)
-        return URL(url)
-
-    def _replace(self, variables, match):
-        expression = match.group(1)
-
-        # Escaping functions (don't need to be in method body)
-        escape_all = functools.partial(quote, safe="/")
-        escape_reserved = functools.partial(quote, safe="/!")
-
-        # Splitting functions
-        split_basic = lambda x: x.split(',')
-        split_operator = lambda x: x[1:].split(',')
-
-        # operator -> (prefix, separator, split, escape)
-        operators = {
-            '+': ('', ',', split_operator, escape_reserved),
-            '#': ('#', ',', split_operator, escape_reserved),
-            '.': ('.', '.', split_operator, escape_all),
-            '/': ('/', '/', split_operator, escape_all),
-            ';': (';', ';', split_operator, escape_all),
-        }
-        default = ('', ',', split_basic, escape_all)
-        prefix, separator, split, escape = operators.get(expression[0], default)
-
-        replacements = []
-        for key in split(expression):
-            if key in variables:
-                replacements.append(escape(variables[key]))
-        return prefix + separator.join(replacements)
+        return URL(template.expand(self._base, variables))

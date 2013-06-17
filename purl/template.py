@@ -47,7 +47,6 @@ def _format_pair_no_equals(explode, separator, escape, key, value):
         return key
     return _format_pair(explode, separator, escape, key, value)
 
-
 def _format_pair_with_equals(explode, separator, escape, key, value):
     """
     Format a key, value pair including the equals sign
@@ -145,11 +144,12 @@ def _split_operator(string):
 
 # Escaping functions
 # ------------------
-# These are responsible for splitting a string into a sequence of (key,
-# modifier) tuples
 
-_escape_all = functools.partial(quote, safe="")
-_escape_reserved = functools.partial(quote, safe="/!,.;")
+def _escape_all(value):
+    return quote(str(value), safe="")
+
+def _escape_reserved(value):
+    return quote(str(value), safe="/!,.;")
 
 # Operator map
 # ------------
