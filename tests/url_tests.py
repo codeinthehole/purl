@@ -201,7 +201,7 @@ class BuilderTests(TestCase):
         second = URL().query_params(first.query_params())
         self.assertEqual(first.query(), second.query())
 
-    def test_app_path_segment(self):
+    def test_add_path_segment(self):
         url = URL('http://example.com').add_path_segment('one')\
                 .add_path_segment('two')\
                 .add_path_segment('three')
