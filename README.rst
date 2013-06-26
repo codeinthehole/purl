@@ -5,6 +5,8 @@ purl - A simple Python URL class
 A simple, immutable URL class with a clean API for interrogation and
 manipulation.  Supports Python 2.6, 2.7 and 3.3.
 
+Also supports template URLs as per `RFC 6570`_
+
 .. image:: https://secure.travis-ci.org/codeinthehole/purl.png
     :target: https://travis-ci.org/codeinthehole/purl
 
@@ -13,6 +15,8 @@ manipulation.  Supports Python 2.6, 2.7 and 3.3.
 
 .. image:: https://pypip.in/d/purl/badge.png
     :target: https://crate.io/packages/purl/
+
+.. _`RFC 6570`: http://tools.ietf.org/html/rfc6570
 
 Docs
 ----
@@ -33,7 +37,9 @@ From Github (unstable)::
 Use
 ---
 
-Construct::
+Construct:
+
+.. code:: python
 
     >>> from purl import URL
 
@@ -48,7 +54,9 @@ Construct::
 
 URL objects are immutable - all mutator methods return a new instance.
 
-Interrogate::
+Interrogate:
+
+.. code:: python
 
     >>> u = URL(u'https://www.google.com/search?q=testing')
     >>> u.scheme()
@@ -90,7 +98,9 @@ Interrogate::
     u'www'
 
 Note that each accessor method is overloaded to be a mutator method too, similar
-to the jQuery API.  Eg::
+to the jQuery API.  Eg:
+
+.. code:: python
 
     >>> u = URL.from_string('https://github.com/codeinthehole')
 
@@ -105,14 +115,18 @@ to the jQuery API.  Eg::
     >>> new_url.path_segment(0)
     u'tangentlabs'
 
-Hence, you can build a URL up in steps::
+Hence, you can build a URL up in steps:
+
+.. code:: python
 
     >>> u = URL().scheme('http').domain('www.example.com').path('/some/path').query_param('q', 'search term')
     >>> u.as_string()
     u'http://www.example.com/some/path?q=search+term'
 
 Along with the above overloaded methods, there is also a ``add_path_segment``
-method for adding a segment at the end of the current path::
+method for adding a segment at the end of the current path:
+
+.. code:: python
 
     >>> new_url = u.add_path_segment('here')
     >>> new_url.as_string()
@@ -124,8 +138,35 @@ Couple of other things:
 * It can be pickled and restored
 * It supports equality operations
 
+URL templates can be used either via a ``Template`` class:
+
+.. code:: python
+
+    >>> from purl import Template
+    >>> tpl = Template("http://example.com{/list*}")
+    >>> url = tpl.expand({'list': ['red', 'green', 'blue']})
+    >>> url.as_string()
+    u'http://example.com/red/green/blue'
+
+or the ``expand`` function:
+
+.. code:: python
+
+    >>> from purl import expand
+    >>> expand(u"{/list*}", {'list': ['red', 'green', 'blue']})
+    u'/red/green/blue'
+
+A wide variety of expansions are possible - refer to the RFC_ for more details.
+
+.. _RFC: http://tools.ietf.org/html/rfc6570
+
 Changelog
 ---------
+
+v0.8
+~~~~
+
+* Support for RFC 6570 URI templates
 
 v0.7
 ~~~~

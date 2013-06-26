@@ -13,9 +13,12 @@ easier.
 API
 ===
 
-There's only one class to be aware of.
+There's only two classes to be aware of.
 
 .. module:: purl
 
 .. autoclass:: URL
+    :members:
+
+.. autoclass:: Template
     :members:

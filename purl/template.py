@@ -10,7 +10,7 @@ except ImportError:
 from . import url
 
 
-__all__ = ['expand']
+__all__ = ['Template', 'expand']
 
 
 patterns = re.compile("{([^\}]+)}")
