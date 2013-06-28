@@ -5,11 +5,14 @@ from nose.tools import eq_
 from purl.template import expand
 
 # Define variables as in the RFC (http://tools.ietf.org/html/rfc6570)
-level2_vars = {
+level1_vars = {
     'var': 'value',
     'hello': 'Hello World!',
-    'path': '/foo/bar'
 }
+level2_vars = level1_vars.copy()
+level2_vars.update({
+    'path': '/foo/bar'
+})
 level3_vars = level2_vars.copy()
 level3_vars.update({
     'empty': '',
@@ -24,8 +27,8 @@ level4_vars.update({
 
 data = [
     # Level 1
-    ('http://example.com/~{username}', {'username': 'hello'}, 'http://example.com/~hello'),
-    ('http://example.com/~{username}', {'username': 'hello world'}, 'http://example.com/~hello%20world'),
+    ('{var}', level1_vars, 'value'),
+    ('{hello}', level1_vars, 'Hello%20World%21'),
     # Level 2 - reserved expansion
     ('{+var}', level2_vars, 'value'),
     ('{+hello}', level2_vars, 'Hello%20World!'),
