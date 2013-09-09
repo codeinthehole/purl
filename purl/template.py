@@ -21,6 +21,9 @@ class Template(object):
     def __init__(self, url_str):
         self._base = url_str
 
+    def __str__(self):
+        return 'Template: %s' % self._base
+
     def expand(self, variables=None):
         return url.URL(expand(self._base, variables))
 
