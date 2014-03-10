@@ -26,4 +26,10 @@ setup(
     install_requires=['six'],
     include_package_data=True,
     package_data={'': ['LICENSE']},
+    classifiers=[
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 3',
+    ],
 )
