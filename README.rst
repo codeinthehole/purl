@@ -219,14 +219,13 @@ Contribute
 
 Clone and install testing dependencies::
 
-    $ python setup.py develop 
-    $ pip install -r requirements.txt
+    $ makeinstall
 
-Ensure tests pass::
+Ensure tests pass using::
 
     $ ./runtests.sh
 
-Or using tox::
+or::
 
     $ tox
 
