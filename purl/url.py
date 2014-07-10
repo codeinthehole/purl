@@ -6,7 +6,6 @@ except ImportError:
     from urllib import urlencode, quote, unquote
     from urlparse import parse_qs, urlparse
 from collections import namedtuple
-import sys
 
 import six
 

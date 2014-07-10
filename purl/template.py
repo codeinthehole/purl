@@ -52,6 +52,7 @@ def _flatten(container):
 # ----------------
 # These are responsible for formatting the (key, value) pair into a string
 
+
 def _format_pair_no_equals(explode, separator, escape, key, value):
     """
     Format a key, value pair but don't include the equals sign
@@ -61,6 +62,7 @@ def _format_pair_no_equals(explode, separator, escape, key, value):
         return key
     return _format_pair(explode, separator, escape, key, value)
 
+
 def _format_pair_with_equals(explode, separator, escape, key, value):
     """
     Format a key, value pair including the equals sign
@@ -69,6 +71,7 @@ def _format_pair_with_equals(explode, separator, escape, key, value):
     if not value:
         return key + '='
     return _format_pair(explode, separator, escape, key, value)
+
 
 def _format_pair(explode, separator, escape, key, value):
     if isinstance(value, (list, tuple)):
@@ -87,7 +90,7 @@ def _format_pair(explode, separator, escape, key, value):
         else:
             # Tuple container
             if explode:
-                items = ["%s=%s" % (k, escape(v)) for (k,v) in value]
+                items = ["%s=%s" % (k, escape(v)) for (k, v) in value]
                 return join_char.join(items)
             else:
                 items = _flatten(value)
@@ -95,6 +98,7 @@ def _format_pair(explode, separator, escape, key, value):
     else:
         escaped_value = escape(value)
     return '%s=%s' % (key, escaped_value)
+
 
 def _format_default(explode, separator, escape, key, value):
     if isinstance(value, (list, tuple)):
@@ -109,7 +113,7 @@ def _format_default(explode, separator, escape, key, value):
         else:
             # Tuple container
             if explode:
-                items = ["%s=%s" % (k, escape(v)) for (k,v) in value]
+                items = ["%s=%s" % (k, escape(v)) for (k, v) in value]
                 escaped_value = join_char.join(items)
             else:
                 items = _flatten(value)
@@ -125,19 +129,22 @@ def _format_default(explode, separator, escape, key, value):
 
 _identity = lambda x: x
 
+
 def _truncate(string, num_chars):
     return string[:num_chars]
+
 
 # Splitting functions
 # -------------------
 # These are responsible for splitting a string into a sequence of (key,
 # modifier) tuples
 
+
 def _split_basic(string):
     """
-    Split a string into a list of tuples of the form
-    (key, modifier_fn, explode) where modifier_fn is a function that applies the
-    appropriate modification to the variable.
+    Split a string into a list of tuples of the form (key, modifier_fn,
+    explode) where modifier_fn is a function that applies the appropriate
+    modification to the variable.
     """
     tuples = []
     for word in string.split(','):
@@ -153,14 +160,18 @@ def _split_basic(string):
         tuples.append((key, modifier_fn, explode))
     return tuples
 
+
 def _split_operator(string):
     return _split_basic(string[1:])
+
 
 # Escaping functions
 # ------------------
 
+
 def _escape_all(value):
     return quote(str(value), safe="")
+
 
 def _escape_reserved(value):
     return quote(str(value), safe="/!,.;")
@@ -188,13 +199,14 @@ def _replace(variables, match):
     expression = match.group(1)
 
     # Look-up chars and functions for the specified operator
-    prefix_char, separator_char, split_fn, escape_fn, format_fn = operator_map.get(
-        expression[0], defaults)
+    (prefix_char, separator_char, split_fn, escape_fn,
+     format_fn) = operator_map.get(expression[0], defaults)
 
     replacements = []
     for key, modify_fn, explode in split_fn(expression):
         if key in variables:
             variable = modify_fn(variables[key])
-            replacement = format_fn(explode, separator_char, escape_fn, key, variable)
+            replacement = format_fn(
+                explode, separator_char, escape_fn, key, variable)
             replacements.append(replacement)
     return prefix_char + separator_char.join(replacements)
