@@ -112,9 +112,6 @@ data = [
     ('{&keys}', level4_vars, '&keys=semi,%3B,dot,.,comma,%2C'),
     ('{&keys*}', level4_vars, '&semi=%3B&dot=.&comma=%2C'),
 ]
-_data = [
-    ('{;x,y,empty}', level3_vars, ';x=1024;y=768;empty'),
-]
 
 
 def assert_expansion(template, fields, expected):
