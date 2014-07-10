@@ -1,6 +1,7 @@
 # Packaging
 pip==1.5.6
 setuptools==5.4.1
+wheel==0.24
 
 # Testing
 nose==1.3
