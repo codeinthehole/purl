@@ -12,5 +12,10 @@ package: clean
 	./setup.py sdist
 	./setup.py bdist_wheel
 
+release:
+	./setup sdist upload
+	./setup bdist_wheel upload
+	git push --tags
+
 clean:
 	-rm -rf dist/ build/
