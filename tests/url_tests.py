@@ -242,6 +242,10 @@ class BuilderTests(TestCase):
         url = URL.from_string('http://www.google.com/').path('search')
         self.assertEqual('/search', url.path())
 
+    def test_set_path_with_special_chars(self):
+        url = URL.from_string('http://www.google.com/').path('search something')
+        self.assertEqual('/search%20something', url.path())
+
     def test_set_query(self):
         url = URL.from_string('http://www.google.com/').query('q=testing')
         self.assertEqual('testing', url.query_param('q'))
