@@ -280,7 +280,8 @@ class URL(object):
         if value:
             if not value.startswith('/'):
                 value = '/' + value
-            return URL._mutate(self, path=value)
+            encoded_value = unicode_quote(value)
+            return URL._mutate(self, path=encoded_value)
         return self._tuple.path
 
     def query(self, value=None):
