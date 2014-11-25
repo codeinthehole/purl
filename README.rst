@@ -7,6 +7,11 @@ manipulation.  Supports Python 2.6, 2.7, 3.3, 3.4 and pypy.
 
 Also supports template URLs as per `RFC 6570`_
 
+Contents:
+
+.. contents:: :local:
+    :depth: 1
+
 .. image:: https://secure.travis-ci.org/codeinthehole/purl.png
     :target: https://travis-ci.org/codeinthehole/purl
 
@@ -28,11 +33,11 @@ Install
 
 From PyPI (stable)::
 
-    pip install purl
+    $ pip install purl
 
 From Github (unstable)::
 
-    pip install git+git://github.com/codeinthehole/purl.git#egg=purl
+    $ pip install git+git://github.com/codeinthehole/purl.git#egg=purl
 
 Use
 ---
@@ -222,13 +227,17 @@ v0.3
 Contribute
 ----------
 
-Clone and install testing dependencies::
+Clone, create a virtualenv then install purl and the packages required for
+testing::
 
-    $ makeinstall
+    $ git clone git@github.com:codeinthehole/purl.git
+    $ cd purl
+    $ mkvirtualenv purl  # requires virtualenvwrapper
+    (purl) $ make
 
 Ensure tests pass using::
 
-    $ ./runtests.sh
+    (purl) $ ./runtests.sh
 
 or::
 
