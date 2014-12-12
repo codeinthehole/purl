@@ -168,6 +168,13 @@ A wide variety of expansions are possible - refer to the RFC_ for more details.
 Changelog
 ---------
 
+v1.0.2
+~~~~~~
+
+* Fix template expansion bug with no matching variables being passed in. This
+  ensures ``purl.Template`` works correctly with the URLs returned from the
+  Github API.
+
 v1.0.1
 ~~~~~~
 
