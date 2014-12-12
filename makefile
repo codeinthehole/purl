@@ -13,9 +13,9 @@ package: clean
 	./setup.py bdist_wheel
 
 release:
-	./setup sdist upload
-	./setup bdist_wheel upload
+	./setup.py sdist upload
+	./setup.py bdist_wheel upload
 	git push --tags
 
 clean:
-	-rm -rf dist/ build/
+	-rm -rf dist/ build/ *.egg-info
