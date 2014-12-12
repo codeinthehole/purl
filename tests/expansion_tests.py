@@ -51,6 +51,7 @@ data = [
     ('X{.x,y}', level3_vars, 'X.1024.768'),
     # Level 3 - path segments, slash prefixed
     ('{/var}', level3_vars, '/value'),
+    ('{/nokey}', level3_vars, ''),
     ('{/var,x}/here', level3_vars, '/value/1024/here'),
     # Level 3 - path segments, semi-colon prefixed
     ('{;x,y}', level3_vars, ';x=1024;y=768'),

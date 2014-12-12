@@ -209,4 +209,6 @@ def _replace(variables, match):
             replacement = format_fn(
                 explode, separator_char, escape_fn, key, variable)
             replacements.append(replacement)
+    if not replacements:
+        return ''
     return prefix_char + separator_char.join(replacements)
