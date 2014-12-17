@@ -170,11 +170,11 @@ def _split_operator(string):
 
 
 def _escape_all(value):
-    return quote(unicode(value).encode('utf8'), safe="")
+    return url.unicode_quote(value, safe="")
 
 
 def _escape_reserved(value):
-    return quote(unicode(value).encode('utf8'), safe="/!,.;")
+    return url.unicode_quote(value, safe="/!,.;")
 
 # Operator map
 # ------------

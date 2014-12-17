@@ -25,7 +25,11 @@ def to_unicode(string):
     """
     if isinstance(string, six.binary_type):
         return string.decode('utf8')
-    return string
+    if isinstance(string, six.text_type):
+        return string
+    if six.PY2:
+        return unicode(string)
+    return str(string)
 
 
 def to_utf8(string):
@@ -35,7 +39,9 @@ def to_utf8(string):
     """
     if isinstance(string, six.text_type):
         return string.encode('utf8')
-    return string
+    if isinstance(string, six.binary_type):
+        return string
+    return str(string)
 
 
 def dict_to_unicode(raw_dict):
@@ -81,7 +87,8 @@ def unicode_urlencode(query, doseq=True):
             value = to_utf8(value)
         pairs.append((to_utf8(key), value))
     encoded_query = dict(pairs)
-    return urlencode(encoded_query, doseq)
+    xx = urlencode(encoded_query, doseq)
+    return xx
 
 
 def parse(url_str):
@@ -370,7 +377,7 @@ class URL(object):
             >>> u.add_path_segment('bar').as_string()
             u'http://example.com/foo/bar'
         """
-        segments = self.path_segments() + (value,)
+        segments = self.path_segments() + (to_unicode(value),)
         return self.path_segments(segments)
 
     # ============
@@ -406,7 +413,12 @@ class URL(object):
         """
         parse_result = self.query_params()
         if value is not None:
-            parse_result[key] = value
+            # Need to ensure all strings are unicode
+            if isinstance(value, (list, tuple)):
+                value = list(map(to_unicode, value))
+            else:
+                value = to_unicode(value)
+            parse_result[to_unicode(key)] = value
             return URL._mutate(
                 self, query=unicode_urlencode(parse_result, doseq=True))
 
@@ -436,6 +448,7 @@ class URL(object):
         :param dict value: new dictionary of values
         """
         if value is not None:
+            ss = unicode_urlencode(value, doseq=True)
             return URL._mutate(self, query=unicode_urlencode(value, doseq=True))
         query = '' if self._tuple.query is None else self._tuple.query
 

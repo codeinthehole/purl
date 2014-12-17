@@ -397,10 +397,6 @@ class UnicodeTests(TestCase):
         url = self.base.add_path_segment(self.bytes)
         self.assertEqual(self.text, url.path_segment(0))
 
-    def test_add_bytestring_path_segment(self):
-        url = self.base.add_path_segment(self.bytes)
-        self.assertEqual(self.text, url.path_segment(0))
-
     def test_add_unicode_fragment(self):
         url = self.base.fragment(self.text)
         self.assertEqual(self.text, url.fragment())
