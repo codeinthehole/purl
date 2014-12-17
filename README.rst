@@ -168,6 +168,11 @@ A wide variety of expansions are possible - refer to the RFC_ for more details.
 Changelog
 ---------
 
+v1.0.3
+~~~~~~
+
+* Handle some unicode compatibility edge-cases
+
 v1.0.2
 ~~~~~~
 
