@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import collections
 
 from nose.tools import eq_
@@ -122,3 +123,7 @@ def assert_expansion(template, fields, expected):
 def test_expansion():
     for template, fields, expected in data:
         yield assert_expansion, template, fields, expected
+
+def test_unicode():
+    expand('{/name}', {'name': u'⚐ hello'})
+
