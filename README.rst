@@ -168,6 +168,11 @@ A wide variety of expansions are possible - refer to the RFC_ for more details.
 Changelog
 ---------
 
+v1.1
+~~~~
+
+* Support setting username and password via mutator methods
+
 v1.0.3
 ~~~~~~
 

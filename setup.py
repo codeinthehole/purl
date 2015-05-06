@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from setuptools import setup, find_packages
 
-__version__ = '1.0.3'
+__version__ = '1.1'
 
 # Python 2/3 compatibility
 import sys
