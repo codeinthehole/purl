@@ -222,16 +222,28 @@ class URL(object):
 
     domain = host
 
-    def username(self):
+    def username(self, value=None):
         """
-        Return the username
+        Return or set the username
+
+        :param string value: the new username to use
+        :returns: string or new :class:`URL` instance
         """
+        #return unicode_unquote(self._tuple.username)
+        if value:
+            return URL._mutate(self, username=value)
         return unicode_unquote(self._tuple.username)
 
-    def password(self):
+    def password(self, value=None):
         """
-        Return the password
+        Return or set the password
+
+        :param string value: the new password to use
+        :returns: string or new :class:`URL` instance
         """
+
+        if value:
+            return URL._mutate(self, password=value)
         return unicode_unquote(self._tuple.password)
 
     def subdomains(self, value=None):
