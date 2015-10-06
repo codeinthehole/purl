@@ -96,14 +96,18 @@ def parse(url_str):
     Extract all parts from a URL string and return them as a dictionary
     """
     url_str = to_unicode(url_str)
-
     result = urlparse(url_str)
     netloc_parts = result.netloc.split('@')
     if len(netloc_parts) == 1:
         username = password = None
         host = netloc_parts[0]
     else:
-        username, password = netloc_parts[0].split(':')
+        user_and_pass = netloc_parts[0].split(':')
+        if len(user_and_pass) == 2:
+            username, password = user_and_pass
+        elif len(user_and_pass) == 1:
+            username = user_and_pass[0]
+            password = None
         host = netloc_parts[1]
 
     if host and ':' in host:
@@ -211,6 +215,8 @@ class URL(object):
         url = self._tuple
         if url.username and url.password:
             netloc = '%s:%s@%s' % (url.username, url.password, url.host)
+        elif url.username and not url.password:
+            netloc = '%s@%s' % (url.username, url.host)
         else:
             netloc = url.host
         if url.port:
