@@ -400,3 +400,14 @@ class UnicodeTests(TestCase):
     def test_add_unicode_fragment(self):
         url = self.base.fragment(self.text)
         self.assertEqual(self.text, url.fragment())
+
+
+class QuotedSlashesTests(TestCase):
+
+    def test_slashes_in_path(self):
+        u = URL().add_path_segment('test/egg')
+        self.assertEqual(u.as_string(), '/test%2Fegg')
+
+    def test_slashes_in_path(self):
+        u = URL('/something').path_segment(0, 'test/egg')
+        self.assertEqual(u.as_string(), '/test%2Fegg')

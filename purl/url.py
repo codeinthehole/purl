@@ -63,6 +63,12 @@ def unicode_quote(string, safe='/'):
     return quote(to_utf8(string), to_utf8(safe))
 
 
+def unicode_quote_path_segment(string):
+    if string is None:
+        return None
+    return quote(to_utf8(string), safe=to_utf8(""))
+
+
 def unicode_unquote(string):
     if string is None:
         return None
@@ -350,7 +356,7 @@ class URL(object):
         """
         if value is not None:
             segments = list(self.path_segments())
-            segments[index] = value
+            segments[index] = unicode_quote_path_segment(value)
             new_path = '/' + '/'.join(segments)
             if self._tuple.path.endswith('/'):
                 new_path += '/'
@@ -367,7 +373,7 @@ class URL(object):
         :param list value: the new path segments to use
         """
         if value is not None:
-            encoded_values = map(unicode_quote, value)
+            encoded_values = map(unicode_quote_path_segment, value)
             new_path = '/' + '/'.join(encoded_values)
             return URL._mutate(self, path=new_path)
         parts = self._tuple.path.split('/')
