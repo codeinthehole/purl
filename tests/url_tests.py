@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
+from purl import URL
 from unittest import TestCase
+
 import pickle
 
 try:
     from urllib.parse import quote
 except ImportError:
     from urllib import quote
-
-from purl import URL
 
 
 class ConstructorTests(TestCase):
@@ -25,6 +24,10 @@ class ConstructorTests(TestCase):
     def test_url_can_be_created_with_host_and_post(self):
         u = URL(host='localhost', port=8000)
         self.assertEqual('http://localhost:8000/', str(u))
+
+    def test_url_can_be_created_with_username_only(self):
+        u = URL(scheme='postgres', username='user', host='127.0.0.1', port='5432', path='/db_name')
+        self.assertEqual('postgres://user@127.0.0.1:5432/db_name', str(u))
 
     def test_no_args_to_constructor(self):
         u = URL()
@@ -104,6 +107,21 @@ class EdgeCaseExtractionTests(TestCase):
         url = URL.from_string('http://localhost:5000')
         self.assertEqual('localhost', url.host())
         self.assertEqual(5000, url.port())
+
+    def test_passwordless_netloc(self):
+        url = URL.from_string('postgres://user@127.0.0.1:5432/db_name')
+        self.assertEqual('user', url.username())
+        self.assertTrue(url.password() is None)
+
+    def test_unicode_username_and_password(self):
+        url = URL.from_string('postgres://jeść:niejeść@127.0.0.1:5432/db_name')
+        self.assertEqual('jeść', url.username())
+        self.assertEqual('niejeść', url.password())
+
+    def test_unicode_username_only(self):
+        url = URL.from_string('postgres://jeść@127.0.0.1:5432/db_name')
+        self.assertEqual('jeść', url.username())
+        self.assertTrue(url.password() is None)
 
     def test_port_for_https_url(self):
         url = URL.from_string('https://github.com')
