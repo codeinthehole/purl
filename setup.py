@@ -1,17 +1,16 @@
 #!/usr/bin/env python
 from setuptools import setup, find_packages
+import sys
 
-__version__ = '1.1'
+from purl import __version__
 
 # Python 2/3 compatibility
-import sys
 if sys.version_info[0] == 3:
     def as_bytes(s):
         return s
 else:
     def as_bytes(s):
         return s.encode('utf8')
-
 
 setup(
     name='purl',
