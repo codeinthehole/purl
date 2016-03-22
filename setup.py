@@ -1,20 +1,9 @@
 #!/usr/bin/env python
 from setuptools import setup, find_packages
-import sys
-
-from purl import __version__
-
-# Python 2/3 compatibility
-if sys.version_info[0] == 3:
-    def as_bytes(s):
-        return s
-else:
-    def as_bytes(s):
-        return s.encode('utf8')
 
 setup(
     name='purl',
-    version=as_bytes(__version__),
+    version='1.2',
     description=(
         "An immutable URL class for easy URL-building and manipulation"),
     long_description=open('README.rst').read(),
