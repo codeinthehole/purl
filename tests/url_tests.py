@@ -204,6 +204,9 @@ class SimpleExtractionTests(TestCase):
     def test_path_segments(self):
         self.assertEqual(('blog', 'article', '1'), self.url.path_segments())
 
+    def test_relative(self):
+        self.assertEqual('/blog/article/1?q=testing', str(self.url.relative()))
+
 
 class NoTrailingSlashTests(TestCase):
 

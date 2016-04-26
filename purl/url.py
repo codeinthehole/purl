@@ -348,6 +348,15 @@ class URL(object):
             return URL._mutate(self, fragment=value)
         return unicode_unquote(self._tuple.fragment)
 
+    def relative(self):
+        """
+        Return a relative URL object (eg strip the protocol and host)
+
+        :returns: new :class:`URL` instance
+        """
+        return URL._mutate(self, scheme=None, host=None)
+
+
     # ====
     # Path
     # ====
@@ -500,6 +509,10 @@ class URL(object):
         else:
             del parse_result[key]
         return URL._mutate(self, query=unicode_urlencode(parse_result, doseq=True))
+
+    # =======
+    # Helpers
+    # =======
 
     @classmethod
     def _mutate(cls, url, **kwargs):
