@@ -204,6 +204,9 @@ class SimpleExtractionTests(TestCase):
     def test_path_segments(self):
         self.assertEqual(('blog', 'article', '1'), self.url.path_segments())
 
+    def test_relative(self):
+        self.assertEqual('/blog/article/1?q=testing', str(self.url.relative()))
+
 
 class NoTrailingSlashTests(TestCase):
 
@@ -291,6 +294,11 @@ class BuilderTests(TestCase):
     def test_set_subdomains(self):
         url = URL().subdomains(['www', 'google', 'com'])
         self.assertEqual('http://www.google.com/', str(url))
+
+    def test_remove_domain(self):
+        url = URL('https://example.com/hello?x=100')
+        new = url.domain('')
+        self.assertEqual('/hello?x=100', str(new))
 
 
 class MiscTests(TestCase):

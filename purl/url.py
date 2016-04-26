@@ -204,7 +204,7 @@ class URL(object):
                  url.path,
                  '?%s' % url.query if url.query else '',
                  '#%s' % url.fragment if url.fragment else '']
-        if url.host is None:
+        if not url.host:
             return ''.join(parts[2:])
         return ''.join(parts)
 
@@ -235,7 +235,7 @@ class URL(object):
 
         :param string value: new host string
         """
-        if value:
+        if value is not None:
             return URL._mutate(self, host=value)
         return self._tuple.host
 
@@ -347,6 +347,15 @@ class URL(object):
         if value:
             return URL._mutate(self, fragment=value)
         return unicode_unquote(self._tuple.fragment)
+
+    def relative(self):
+        """
+        Return a relative URL object (eg strip the protocol and host)
+
+        :returns: new :class:`URL` instance
+        """
+        return URL._mutate(self, scheme=None, host=None)
+
 
     # ====
     # Path
@@ -500,6 +509,10 @@ class URL(object):
         else:
             del parse_result[key]
         return URL._mutate(self, query=unicode_urlencode(parse_result, doseq=True))
+
+    # =======
+    # Helpers
+    # =======
 
     @classmethod
     def _mutate(cls, url, **kwargs):
