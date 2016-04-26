@@ -204,7 +204,7 @@ class URL(object):
                  url.path,
                  '?%s' % url.query if url.query else '',
                  '#%s' % url.fragment if url.fragment else '']
-        if url.host is None:
+        if not url.host:
             return ''.join(parts[2:])
         return ''.join(parts)
 
@@ -235,7 +235,7 @@ class URL(object):
 
         :param string value: new host string
         """
-        if value:
+        if value is not None:
             return URL._mutate(self, host=value)
         return self._tuple.host
 

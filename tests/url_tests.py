@@ -292,6 +292,11 @@ class BuilderTests(TestCase):
         url = URL().subdomains(['www', 'google', 'com'])
         self.assertEqual('http://www.google.com/', str(url))
 
+    def test_remove_domain(self):
+        url = URL('https://example.com/hello?x=100')
+        new = url.domain('')
+        self.assertEqual('/hello?x=100', str(new))
+
 
 class MiscTests(TestCase):
 
