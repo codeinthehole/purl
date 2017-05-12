@@ -164,6 +164,10 @@ class URL(object):
                       'query': None,
                       'fragment': None}
 
+        # Ensure path starts with a slash
+        if path and not path.startswith("/"):
+            path = "/%s" % path
+
         # Kwargs override the url_str
         for var in 'host username password scheme port path query fragment'.split():
             if locals()[var] is not None:

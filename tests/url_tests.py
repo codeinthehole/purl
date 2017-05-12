@@ -44,6 +44,14 @@ class ConstructorTests(TestCase):
         u = URL('https://github.com', scheme='http')
         self.assertEqual('http://github.com', u.as_string())
 
+    def test_creation_with_host_and_path(self):
+        u = URL(host='localhost', path="boo")
+        self.assertEqual('http://localhost/boo', str(u))
+
+    def test_creation_with_host_and_path_2(self):
+        u = URL(host='localhost').add_path_segment('boo')
+        self.assertEqual('http://localhost/boo', str(u))
+
 
 class MoreFactoryTests(TestCase):
 
