@@ -169,6 +169,11 @@ A wide variety of expansions are possible - refer to the RFC_ for more details.
 Changelog
 ---------
 
+v1.3.1
+~~~~~~
+
+* Ensure paths always have a leading slash
+
 v1.3
 ~~~~
 
@@ -280,5 +285,4 @@ or::
     $ tox
     $ tox
 
-Hack away.
 Hack away.
