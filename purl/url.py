@@ -249,7 +249,7 @@ class URL(object):
         :returns: string or new :class:`URL` instance
         """
         #return unicode_unquote(self._tuple.username)
-        if value:
+        if value is not None:
             return URL._mutate(self, username=value)
         return unicode_unquote(self._tuple.username)
 
@@ -260,8 +260,7 @@ class URL(object):
         :param string value: the new password to use
         :returns: string or new :class:`URL` instance
         """
-
-        if value:
+        if value is not None:
             return URL._mutate(self, password=value)
         return unicode_unquote(self._tuple.password)
 
