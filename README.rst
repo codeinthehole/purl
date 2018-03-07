@@ -15,10 +15,10 @@ Contents:
 .. image:: https://secure.travis-ci.org/codeinthehole/purl.png
     :target: https://travis-ci.org/codeinthehole/purl
 
-.. image:: https://pypip.in/v/purl/badge.png
+.. image:: https://img.shields.io/pypi/v/purl.svg
     :target: https://crate.io/packages/purl/
 
-.. image:: https://pypip.in/d/purl/badge.png
+.. image:: https://img.shields.io/pypi/dm/purl.svg
     :target: https://crate.io/packages/purl/
 
 .. _`RFC 6570`: http://tools.ietf.org/html/rfc6570
