@@ -63,44 +63,44 @@ Interrogate:
 
 .. code:: python
 
-    >>> u = URL(u'https://www.google.com/search?q=testing')
+    >>> u = URL('https://www.google.com/search?q=testing')
     >>> u.scheme()
-    u'https'
+    'https'
     >>> u.host()
-    u'www.google.com'
+    'www.google.com'
     >>> u.domain()
-    u'www.google.com'
+    'www.google.com'
     >>> u.username()
     >>> u.password()
     >>> u.netloc()
-    u'www.google.com'
+    'www.google.com'
     >>> u.port()
     >>> u.path()
-    u'/search'
+    '/search'
     >>> u.query()
-    u'q=testing'
+    'q=testing'
     >>> u.fragment()
-    u''
+    ''
     >>> u.path_segment(0)
-    u'search'
+    'search'
     >>> u.path_segments()
-    (u'search',)
+    ('search',)
     >>> u.query_param('q')
-    u'testing'
+    'testing'
     >>> u.query_param('q', as_list=True)
-    [u'testing']
-    >>> u.query_param('lang', default=u'GB')
-    u'GB'
+    ['testing']
+    >>> u.query_param('lang', default='GB')
+    'GB'
     >>> u.query_params()
-    {u'q': [u'testing']}
+    {'q': ['testing']}
     >>> u.has_query_param('q')
     True
     >>> u.has_query_params(('q', 'r'))
     False
     >>> u.subdomains()
-    [u'www', u'google', u'com']
+    ['www', 'google', 'com']
     >>> u.subdomain(0)
-    u'www'
+    'www'
 
 Note that each accessor method is overloaded to be a mutator method too, similar
 to the jQuery API.  Eg:
@@ -111,14 +111,14 @@ to the jQuery API.  Eg:
 
     # Access
     >>> u.path_segment(0)
-    u'codeinthehole'
+    'codeinthehole'
 
     # Mutate (creates a new instance)
     >>> new_url = u.path_segment(0, 'tangentlabs')
     >>> new_url is u
     False
     >>> new_url.path_segment(0)
-    u'tangentlabs'
+    'tangentlabs'
 
 Hence, you can build a URL up in steps:
 
@@ -126,7 +126,7 @@ Hence, you can build a URL up in steps:
 
     >>> u = URL().scheme('http').domain('www.example.com').path('/some/path').query_param('q', 'search term')
     >>> u.as_string()
-    u'http://www.example.com/some/path?q=search+term'
+    'http://www.example.com/some/path?q=search+term'
 
 Along with the above overloaded methods, there is also a ``add_path_segment``
 method for adding a segment at the end of the current path:
@@ -135,7 +135,7 @@ method for adding a segment at the end of the current path:
 
     >>> new_url = u.add_path_segment('here')
     >>> new_url.as_string()
-    u'http://www.example.com/some/path/here?q=search+term'
+    'http://www.example.com/some/path/here?q=search+term'
 
 Couple of other things:
 
@@ -152,7 +152,7 @@ URL templates can be used either via a ``Template`` class:
     >>> tpl = Template("http://example.com{/list*}")
     >>> url = tpl.expand({'list': ['red', 'green', 'blue']})
     >>> url.as_string()
-    u'http://example.com/red/green/blue'
+    'http://example.com/red/green/blue'
 
 or the ``expand`` function:
 
@@ -160,7 +160,7 @@ or the ``expand`` function:
 
     >>> from purl import expand
     >>> expand(u"{/list*}", {'list': ['red', 'green', 'blue']})
-    u'/red/green/blue'
+    '/red/green/blue'
 
 A wide variety of expansions are possible - refer to the RFC_ for more details.
 

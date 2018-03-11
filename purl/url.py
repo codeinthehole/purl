@@ -136,12 +136,12 @@ class URL(object):
     1. Pass a URL string::
 
         >>> URL('http://www.google.com/search?q=testing').as_string()
-        u'http://www.google.com/search?q=testing'
+        'http://www.google.com/search?q=testing'
 
     2. Pass keyword arguments::
 
         >>> URL(host='www.google.com', path='/search', query='q=testing').as_string()
-        u'http://www.google.com/search?q=testing'
+        'http://www.google.com/search?q=testing'
 
     If you pass both a URL string and keyword args, then the values of keyword
     args take precedence.
@@ -411,7 +411,7 @@ class URL(object):
 
             >>> u = URL('http://example.com/foo/')
             >>> u.add_path_segment('bar').as_string()
-            u'http://example.com/foo/bar'
+            'http://example.com/foo/bar'
         """
         segments = self.path_segments() + (to_unicode(value),)
         return self.path_segments(segments)
