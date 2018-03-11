@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='purl',
-    version='1.3.1',
+    version='1.4',
     description=(
         "An immutable URL class for easy URL-building and manipulation"),
     long_description=open('README.rst').read(),
@@ -25,6 +25,8 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: Implementation :: PyPy',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
