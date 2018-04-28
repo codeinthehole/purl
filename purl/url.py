@@ -252,7 +252,6 @@ class URL(object):
         :param string value: the new username to use
         :returns: string or new :class:`URL` instance
         """
-        #return unicode_unquote(self._tuple.username)
         if value is not None:
             return URL._mutate(self, username=value)
         return unicode_unquote(self._tuple.username)
@@ -300,7 +299,7 @@ class URL(object):
         :param string value: the new scheme to use
         :returns: string or new :class:`URL` instance
         """
-        if value:
+        if value is not None:
             return URL._mutate(self, scheme=value)
         return self._tuple.scheme
 
@@ -311,7 +310,7 @@ class URL(object):
         :param string value: the new path to use
         :returns: string or new :class:`URL` instance
         """
-        if value:
+        if value is not None:
             if not value.startswith('/'):
                 value = '/' + value
             encoded_value = unicode_quote(value)
@@ -325,7 +324,7 @@ class URL(object):
         :param string value: the new query string to use
         :returns: string or new :class:`URL` instance
         """
-        if value:
+        if value is not None:
             return URL._mutate(self, query=value)
         return self._tuple.query
 
@@ -336,7 +335,7 @@ class URL(object):
         :param string value: the new port to use
         :returns: string or new :class:`URL` instance
         """
-        if value:
+        if value is not None:
             return URL._mutate(self, port=value)
         return self._tuple.port
 
@@ -347,7 +346,7 @@ class URL(object):
         :param string value: the new fragment to use
         :returns: string or new :class:`URL` instance
         """
-        if value:
+        if value is not None:
             return URL._mutate(self, fragment=value)
         return unicode_unquote(self._tuple.fragment)
 
@@ -358,7 +357,6 @@ class URL(object):
         :returns: new :class:`URL` instance
         """
         return URL._mutate(self, scheme=None, host=None)
-
 
     # ====
     # Path
@@ -484,7 +482,6 @@ class URL(object):
         :param dict value: new dictionary of values
         """
         if value is not None:
-            ss = unicode_urlencode(value, doseq=True)
             return URL._mutate(self, query=unicode_urlencode(value, doseq=True))
         query = '' if self._tuple.query is None else self._tuple.query
 

@@ -308,6 +308,11 @@ class BuilderTests(TestCase):
         new = url.domain('')
         self.assertEqual('/hello?x=100', str(new))
 
+    def test_remove_port(self):
+        url = URL('https://example.com/hello?x=100')
+        new = url.port('')
+        self.assertEqual('https://example.com/hello?x=100', str(new))
+
 
 class MiscTests(TestCase):
 
