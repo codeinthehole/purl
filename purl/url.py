@@ -103,7 +103,7 @@ def parse(url_str):
     """
     url_str = to_unicode(url_str)
     result = urlparse(url_str)
-    netloc_parts = result.netloc.split('@')
+    netloc_parts = result.netloc.rsplit('@', 1)
     if len(netloc_parts) == 1:
         username = password = None
         host = netloc_parts[0]
