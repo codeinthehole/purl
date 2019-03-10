@@ -111,6 +111,11 @@ class EdgeCaseExtractionTests(TestCase):
         url = URL.from_string('ftp://user:pw@ftp.host')
         self.assertEqual('user:pw@ftp.host', url.netloc())
 
+    def test_auth_with_special_char(self):
+        url = URL.from_string('ftp://user:b@z@ftp.host')
+        self.assertEqual('user', url.username())
+        self.assertEqual('b@z', url.password())
+
     def test_port_in_netloc(self):
         url = URL.from_string('http://localhost:5000')
         self.assertEqual('localhost', url.host())
