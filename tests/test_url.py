@@ -167,7 +167,7 @@ class SimpleExtractionTests(TestCase):
         self.assertEqual('1', self.url.path_segment(2))
 
     def test_port_defaults_to_none(self):
-        self.assert_(self.url.port() is None)
+        assert self.url.port() is None
 
     def test_scheme(self):
         self.assertEqual('http', self.url.scheme())
@@ -200,7 +200,7 @@ class SimpleExtractionTests(TestCase):
         self.assertEqual({'q': ['testing']}, self.url.query_params())
 
     def test_path_extraction_returns_none_if_index_too_large(self):
-        self.assert_(self.url.path_segment(14) is None)
+        assert self.url.path_segment(14) is None
 
     def test_path_extraction_can_take_default_value(self):
         self.assertEqual('hello', self.url.path_segment(3, default='hello'))
@@ -212,7 +212,7 @@ class SimpleExtractionTests(TestCase):
         self.assertEqual('eggs', self.url.query_param('p', default='eggs'))
 
     def test_parameter_extraction_is_none_if_not_found(self):
-        self.assert_(self.url.query_param('p') is None)
+        assert self.url.query_param('p') is None
 
     def test_path_segments(self):
         self.assertEqual(('blog', 'article', '1'), self.url.path_segments())
