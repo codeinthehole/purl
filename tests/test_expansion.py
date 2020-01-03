@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import collections
 
-from nose.tools import eq_
+import pytest
 
 from purl.template import expand
 
@@ -116,14 +116,9 @@ data = [
 ]
 
 
-def assert_expansion(template, fields, expected):
-    eq_(expand(template, fields), expected)
-
-
-def test_expansion():
-    for template, fields, expected in data:
-        yield assert_expansion, template, fields, expected
+@pytest.mark.parametrize("template, fields, expected", data)
+def test_assert_expansion(template, fields, expected):
+    assert expand(template, fields) == expected
 
 def test_unicode():
     expand('{/name}', {'name': u'⚐ hello'})
-

@@ -3,7 +3,7 @@ install:
 	python setup.py develop
 
 test:
-	nosetests
+	pytest
 
 package: clean
 	# Test these packages in a fresh virtualenvs:

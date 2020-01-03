@@ -283,7 +283,7 @@ testing::
 
 Ensure tests pass using::
 
-    (purl) $ ./runtests.sh
+    (purl) $ pytest
 
 or::
 
