@@ -13,7 +13,7 @@ from . import url
 __all__ = ['Template', 'expand']
 
 
-patterns = re.compile("{([^\}]+)}")
+patterns = re.compile(r"{([^\}]+)}")
 
 
 class Template(object):
