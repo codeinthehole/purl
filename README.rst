@@ -3,7 +3,7 @@ purl - A simple Python URL class
 ================================
 
 A simple, immutable URL class with a clean API for interrogation and
-manipulation.  Supports Pythons 2.7, 3.3, 3.4, 3.5, 3.6 and pypy.
+manipulation.  Supports Pythons 2.7, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8 and pypy.
 
 Also supports template URLs as per `RFC 6570`_
 
