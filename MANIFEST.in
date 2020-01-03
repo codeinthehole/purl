@@ -1,1 +1,5 @@
 include *.rst LICENSE
+graft tests
+graft docs
+global-exclude __pycache__
+global-exclude *.py[co]
