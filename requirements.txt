@@ -4,5 +4,5 @@ setuptools==40.8.0
 wheel==0.33.1
 
 # Testing
-nose==1.3.7
+pytest
 tox==3.7.0
