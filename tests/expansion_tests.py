@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 import collections
 
-from nose.tools import eq_
-
 from purl.template import expand
 
 # Define variables as in the RFC (http://tools.ietf.org/html/rfc6570)
@@ -117,7 +115,7 @@ data = [
 
 
 def assert_expansion(template, fields, expected):
-    eq_(expand(template, fields), expected)
+    assert expand(template, fields) == expected
 
 
 def test_expansion():
