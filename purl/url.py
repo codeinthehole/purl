@@ -535,6 +535,18 @@ class URL(object):
             del parse_result[key]
         return URL._mutate(self, query=unicode_urlencode(parse_result, doseq=True))
 
+    def remove_query_params(self, *keys):
+        """
+        Remove one or more query parameters from a URL
+
+        :param string key: The keys to delete
+        """
+
+        url = self
+        for key in keys:
+            url = url.remove_query_param(key)
+        return url
+
     # =======
     # Helpers
     # =======
