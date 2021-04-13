@@ -1,8 +1,8 @@
 # Packaging
-pip==19.0.3
-setuptools==40.8.0
-wheel==0.33.1
+pip==20.3.4  # max version compatible with Python 2.7
+setuptools==56.0.0
+wheel==0.36.2
 
 # Testing
 pytest
-tox==3.7.0
+tox==3.23.0
