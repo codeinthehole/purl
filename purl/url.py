@@ -1,13 +1,8 @@
 from __future__ import unicode_literals
 
-try:
-    from urllib.parse import parse_qs, urlencode, urlparse, quote, unquote
-except ImportError:
-    from urllib import urlencode, quote, unquote
-    from urlparse import parse_qs, urlparse
+from urllib.parse import parse_qs, urlencode, urlparse, quote, unquote
 from collections import namedtuple
 
-import six
 
 
 # To minimise memory consumption, we use a namedtuple to store all instance
@@ -23,13 +18,11 @@ def to_unicode(string):
     """
     Ensure a passed string is unicode
     """
-    if isinstance(string, six.binary_type):
-        return string.decode('utf8')
-    if isinstance(string, six.text_type):
-        return string
-    if six.PY2:
-        return unicode(string)
-    return str(string)
+    if isinstance(string, bytes):
+        string = string.decode("utf8")
+    else:
+        string = str(string)
+    return string
 
 
 def to_utf8(string):
@@ -37,11 +30,9 @@ def to_utf8(string):
     Encode a string as a UTF8 bytestring.  This function could be passed a
     bytestring or unicode string so must distinguish between the two.
     """
-    if isinstance(string, six.text_type):
-        return string.encode('utf8')
-    if isinstance(string, six.binary_type):
-        return string
-    return str(string)
+    if not isinstance(string, bytes):
+        string = str(string).encode("utf8")
+    return string
 
 
 def dict_to_unicode(raw_dict):
@@ -72,9 +63,7 @@ def unicode_quote_path_segment(string):
 def unicode_unquote(string):
     if string is None:
         return None
-    if six.PY3:
-        return unquote(string)
-    return to_unicode(unquote(to_utf8(string)))
+    return unquote(string)
 
 
 def unicode_urlencode(query, doseq=True):
@@ -484,12 +473,6 @@ class URL(object):
         if value is not None:
             return URL._mutate(self, query=unicode_urlencode(value, doseq=True))
         query = '' if self._tuple.query is None else self._tuple.query
-
-        # In Python 2.6, urlparse needs a bytestring so we encode and then
-        # decode the result.
-        if not six.PY3:
-            result = parse_qs(to_utf8(query), True)
-            return dict_to_unicode(result)
 
         return parse_qs(query, True)
 

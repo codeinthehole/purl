@@ -1,11 +1,7 @@
 import re
 import functools
 
-try:
-    from urllib.parse import quote
-except ImportError:
-    # Python 2
-    from urllib import quote
+from urllib.parse import quote
 
 from . import url
 
@@ -123,8 +119,8 @@ def _format_default(explode, separator, escape, key, value):
     return escaped_value
 
 
-# Modifer functions
-# -----------------
+# Modifier functions
+# ------------------
 # These are responsible for modifying the variable before formatting
 
 _identity = lambda x: x
@@ -209,6 +205,8 @@ def _replace(variables, match):
             replacement = format_fn(
                 explode, separator_char, escape_fn, key, variable)
             replacements.append(replacement)
+
     if not replacements:
         return ''
+
     return prefix_char + separator_char.join(replacements)

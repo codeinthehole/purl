@@ -65,22 +65,22 @@ class TestMoreFactory:
 class TestFactory:
 
     url_str = 'http://www.google.com/search/?q=testing#fragment'
-    url = URL.from_string(url_str)
 
     def test_scheme(self):
-        assert 'http' == self.url.scheme()
-
-    def test_fragment(self):
-        assert 'fragment' == self.url.fragment()
+        url = URL.from_string(self.url_str)
+        assert 'http' == url.scheme()
 
     def test_path(self):
-        assert '/search/' == self.url.path()
+        url = URL.from_string(self.url_str)
+        assert '/search/' == url.path()
 
     def test_host(self):
-        assert 'www.google.com' == self.url.host()
+        url = URL.from_string(self.url_str)
+        assert 'www.google.com' == url.host()
 
     def test_string_version(self):
-        assert self.url_str == str(self.url)
+        url = URL.from_string(self.url_str)
+        assert self.url_str == str(url)
 
 
 class TestEdgeCaseExtraction:
@@ -138,81 +138,84 @@ class TestEdgeCaseExtraction:
 
 
 class TestSimpleExtraction:
-    url = URL.from_string('http://www.google.com/blog/article/1?q=testing')
 
-    def test_has_actual_param(self):
-        assert self.url.has_query_param('q') is True
+    @pytest.fixture
+    def url(self):
+        return URL.from_string('http://www.google.com/blog/article/1?q=testing')
 
-    def test_remove_query_param(self):
-        new_url = self.url.remove_query_param('q')
+    def test_has_actual_param(self, url):
+        assert url.has_query_param('q') is True
+
+    def test_remove_query_param(self, url):
+        new_url = url.remove_query_param('q')
         assert 'http://www.google.com/blog/article/1' == new_url.as_string()
 
-    def test_has_query_params(self):
-        assert self.url.has_query_params(['q']) is True
+    def test_has_query_params(self, url):
+        assert url.has_query_params(['q']) is True
 
-    def test_has_query_params_negative(self):
-        assert self.url.has_query_params(['q', 'r']) is False
+    def test_has_query_params_negative(self, url):
+        assert url.has_query_params(['q', 'r']) is False
 
-    def test_netloc(self):
-        assert 'www.google.com' == self.url.netloc()
+    def test_netloc(self, url):
+        assert 'www.google.com' == url.netloc()
 
-    def test_path_extraction(self):
-        assert '1' == self.url.path_segment(2)
+    def test_path_extraction(self, url):
+        assert '1' == url.path_segment(2)
 
-    def test_port_defaults_to_none(self):
-        assert self.url.port() is None
+    def test_port_defaults_to_none(self, url):
+        assert url.port() is None
 
-    def test_scheme(self):
-        assert 'http' == self.url.scheme()
+    def test_scheme(self, url):
+        assert 'http' == url.scheme()
 
-    def test_host(self):
-        assert 'www.google.com' == self.url.host()
+    def test_host(self, url):
+        assert 'www.google.com' == url.host()
 
-    def test_domain(self):
-        assert 'www.google.com' == self.url.domain()
+    def test_domain(self, url):
+        assert 'www.google.com' == url.domain()
 
-    def test_subdomains(self):
-        assert ['www' == 'google', 'com'], self.url.subdomains()
+    def test_subdomains(self, url):
+        assert ['www' == 'google', 'com'], url.subdomains()
 
-    def test_subdomain(self):
-        assert 'www' == self.url.subdomain(0)
+    def test_subdomain(self, url):
+        assert 'www' == url.subdomain(0)
 
-    def test_invalid_subdomain_raises_indexerror(self):
+    def test_invalid_subdomain_raises_indexerror(self, url):
         with pytest.raises(IndexError):
-            self.url.subdomain(10)
+            url.subdomain(10)
 
-    def test_path(self):
-        assert '/blog/article/1' == self.url.path()
+    def test_path(self, url):
+        assert '/blog/article/1' == url.path()
 
-    def test_query(self):
-        assert 'q=testing' == self.url.query()
+    def test_query(self, url):
+        assert 'q=testing' == url.query()
 
-    def test_query_param_as_list(self):
-        assert ['testing'] == self.url.query_param('q', as_list=True)
+    def test_query_param_as_list(self, url):
+        assert ['testing'] == url.query_param('q', as_list=True)
 
-    def test_query_params(self):
-        assert {'q': ['testing']} == self.url.query_params()
+    def test_query_params(self, url):
+        assert {'q': ['testing']} == url.query_params()
 
-    def test_path_extraction_returns_none_if_index_too_large(self):
-        assert self.url.path_segment(14) is None
+    def test_path_extraction_returns_none_if_index_too_large(self, url):
+        assert url.path_segment(14) is None
 
-    def test_path_extraction_can_take_default_value(self):
-        assert 'hello' == self.url.path_segment(3, default='hello')
+    def test_path_extraction_can_take_default_value(self, url):
+        assert 'hello' == url.path_segment(3, default='hello')
 
-    def test_parameter_extraction(self):
-        assert 'testing' == self.url.query_param('q')
+    def test_parameter_extraction(self, url):
+        assert 'testing' == url.query_param('q')
 
-    def test_parameter_extraction_with_default(self):
-        assert 'eggs' == self.url.query_param('p', default='eggs')
+    def test_parameter_extraction_with_default(self, url):
+        assert 'eggs' == url.query_param('p', default='eggs')
 
-    def test_parameter_extraction_is_none_if_not_found(self):
-        assert self.url.query_param('p') is None
+    def test_parameter_extraction_is_none_if_not_found(self, url):
+        assert url.query_param('p') is None
 
-    def test_path_segments(self):
-        assert ('blog', 'article', '1') == self.url.path_segments()
+    def test_path_segments(self, url):
+        assert ('blog', 'article', '1') == url.path_segments()
 
-    def test_relative(self):
-        assert '/blog/article/1?q=testing' == str(self.url.relative())
+    def test_relative(self, url):
+        assert '/blog/article/1?q=testing' == str(url.relative())
 
 
 class TestNoTrailingSlash:
@@ -395,52 +398,55 @@ class TestUnicodeExtraction:
 
 
 class TestUnicode:
-    base = URL('http://127.0.0.1/')
-    text = u'ć'
+    text = 'ć'
     bytes = text.encode('utf8')
 
-    def test_set_unicode_query_param_value(self):
-        url = self.base.query_param('q', self.text)
+    @pytest.fixture()
+    def url(self):
+        return URL('http://127.0.0.1/')
+
+    def test_set_unicode_query_param_value(self, url):
+        url = url.query_param('q', self.text)
         assert self.text == url.query_param('q')
 
-    def test_set_bytestring_query_param_value(self):
-        url = self.base.query_param('q', self.bytes)
+    def test_set_bytestring_query_param_value(self, url):
+        url = url.query_param('q', self.bytes)
         assert self.text == url.query_param('q')
 
-    def test_set_unicode_query_param_key(self):
-        url = self.base.query_param(self.text, 'value')
+    def test_set_unicode_query_param_key(self, url):
+        url = url.query_param(self.text, 'value')
         assert 'value' == url.query_param(self.text)
 
-    def test_set_bytestring_query_param_key(self):
-        url = self.base.query_param(self.bytes, 'value')
+    def test_set_bytestring_query_param_key(self, url):
+        url = url.query_param(self.bytes, 'value')
         assert 'value' == url.query_param(self.text)
 
-    def test_append_unicode_query_param(self):
-        url = self.base.append_query_param('q', self.text)
+    def test_append_unicode_query_param(self, url):
+        url = url.append_query_param('q', self.text)
         assert self.text == url.query_param('q')
 
-    def test_append_bytestring_query_param(self):
-        url = self.base.append_query_param('q', self.bytes)
+    def test_append_bytestring_query_param(self, url):
+        url = url.append_query_param('q', self.bytes)
         assert self.text == url.query_param('q')
 
-    def test_set_unicode_query_params(self):
-        url = self.base.query_params({'q': self.text})
+    def test_set_unicode_query_params(self, url):
+        url = url.query_params({'q': self.text})
         assert self.text == url.query_param('q')
 
-    def test_set_bytestring_query_params(self):
-        url = self.base.query_params({'q': self.bytes})
+    def test_set_bytestring_query_params(self, url):
+        url = url.query_params({'q': self.bytes})
         assert self.text == url.query_param('q')
 
-    def test_add_unicode_path_segment(self):
-        url = self.base.add_path_segment(self.text)
+    def test_add_unicode_path_segment(self, url):
+        url = url.add_path_segment(self.text)
         assert self.text == url.path_segment(0)
 
-    def test_add_bytestring_path_segment(self):
-        url = self.base.add_path_segment(self.bytes)
+    def test_add_bytestring_path_segment(self, url):
+        url = url.add_path_segment(self.bytes)
         assert self.text == url.path_segment(0)
 
-    def test_add_unicode_fragment(self):
-        url = self.base.fragment(self.text)
+    def test_add_unicode_fragment(self, url):
+        url = url.fragment(self.text)
         assert self.text == url.fragment()
 
 
