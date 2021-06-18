@@ -1,7 +1,13 @@
+# Packaging
 *.egg-info/
 *.pyc
-.tox
-__pycache__/
 dist/*
 docs/_build/*
 build
+
+# Testing
+.tox
+__pycache__/
+
+# Ctags
+tags
