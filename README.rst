@@ -125,14 +125,43 @@ Hence, you can build a URL up in steps:
     >>> u.as_string()
     'http://www.example.com/some/path?q=search+term'
 
-Along with the above overloaded methods, there is also a ``add_path_segment``
-method for adding a segment at the end of the current path:
+Along with the above overloaded methods, there are also the ``add_path_segment``
+and ``add_path_segments`` methods for adding segments at the end of the current
+path:
 
 .. code:: python
 
     >>> new_url = u.add_path_segment('here')
     >>> new_url.as_string()
     'http://www.example.com/some/path/here?q=search+term'
+    >>> new_url = u.add_path_segments('here', 'too')
+    >>> new_url.as_string()
+    'http://www.example.com/some/path/here/too?q=search+term'
+
+There are also the ``append_query_param``, ``append_query_params`` and
+``remove_query_param`` methods:
+
+.. code:: python
+
+    # appending only one parameter
+    >>> u = u.append_query_param('key1', 'value1')  
+    >>> u.as_string()
+    'https://www.google.com/search?q=testing&key1=value1'
+
+    # removing a parameter
+    >>> u = u.remove_query_param('key1')
+    >>> u.as_string()
+    'https://www.google.com/search?q=testing'
+
+    # appending multiple parameters at once
+    >>> u = u.append_query_params(('key', 'value'), ('another', 'test'))
+    >>> u.as_string()
+    'https://www.google.com/search?q=testing&key=value&another=test'
+
+    # removing multiple parameters at once
+    >>> u = u.remove_query_params('q', 'key', 'another') 
+    >>> u.as_string()
+    'https://www.google.com/search'
 
 Couple of other things:
 

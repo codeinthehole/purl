@@ -414,6 +414,18 @@ class URL(object):
         segments = self.path_segments() + (to_unicode(value),)
         return self.path_segments(segments)
 
+    def add_path_segments(self, *values):
+        """
+        Add one or more path segments to the end ot the current string
+
+        :param string values: the new segments to use
+        """
+
+        segments = self.path_segments()
+        for value in values:
+            segments += (to_unicode(value),)
+        return self.path_segments(segments)
+
     # ============
     # Query params
     # ============
@@ -475,6 +487,19 @@ class URL(object):
         values.append(value)
         return self.query_param(key, values)
 
+    def append_query_params(self, *keyvaluetuples):
+        """
+        Append one or more query parameters
+
+        Provide the query parameters as tuples, where the first value in the
+        tuple represents the key, and the second one represents the value.
+        """
+
+        url = self
+        for keyvalue in keyvaluetuples:
+            url = url.append_query_param(keyvalue[0], keyvalue[1])
+        return url
+
     def query_params(self, value=None):
         """
         Return or set a dictionary of query params
@@ -509,6 +534,18 @@ class URL(object):
         else:
             del parse_result[key]
         return URL._mutate(self, query=unicode_urlencode(parse_result, doseq=True))
+
+    def remove_query_params(self, *keys):
+        """
+        Remove one or more query parameters from a URL
+
+        :param string key: The keys to delete
+        """
+
+        url = self
+        for key in keys:
+            url = url.remove_query_param(key)
+        return url
 
     # =======
     # Helpers
