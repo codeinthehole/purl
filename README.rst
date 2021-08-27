@@ -67,6 +67,8 @@ Interrogate:
     'www.google.com'
     >>> u.domain()
     'www.google.com'
+    >>> u.origin()
+    'https://www.google.com'
     >>> u.username()
     >>> u.password()
     >>> u.netloc()
