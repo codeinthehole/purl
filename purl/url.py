@@ -233,6 +233,13 @@ class URL(object):
             netloc = '%s:%s' % (netloc, url.port)
         return netloc
 
+    def origin(self):
+        """
+        Return the origin
+        """
+        url = self._tuple
+        return '%s://%s' % (url.scheme, self.netloc())
+
     def host(self, value=None):
         """
         Return the host

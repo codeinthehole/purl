@@ -174,6 +174,9 @@ class TestSimpleExtraction:
     def test_domain(self):
         assert "www.google.com" == self.url.domain()
 
+    def test_origin(self):
+        assert "http://www.google.com" == self.url.origin()
+
     def test_subdomains(self):
         assert ["www" == "google", "com"], self.url.subdomains()
 
