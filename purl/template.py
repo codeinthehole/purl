@@ -123,8 +123,8 @@ def _format_default(explode, separator, escape, key, value):
     return escaped_value
 
 
-# Modifer functions
-# -----------------
+# Modifier functions
+# ------------------
 # These are responsible for modifying the variable before formatting
 
 _identity = lambda x: x
