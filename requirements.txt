@@ -1,8 +1,8 @@
 # Packaging
-pip==19.0.3
+pip
 setuptools==40.8.0
 wheel==0.33.1
 
 # Testing
 pytest
-tox==3.7.0
+tox==3.25.0
