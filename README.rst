@@ -169,7 +169,7 @@ Changelog
 v1.6 - 2021-05-15
 ~~~~~~~~~~~~~~~~~
 
-* Use `pytest` insteed of `nose`.
+* Use `pytest` instead of `nose`.
 * Fix warning around regex string.
 
 v1.5 - 2019-03-10
