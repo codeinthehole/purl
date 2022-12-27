@@ -1,6 +1,6 @@
 # Packaging
 pip==19.0.3
-setuptools==40.8.0
+setuptools==65.5.1
 wheel==0.33.1
 
 # Testing
