@@ -1,11 +1,7 @@
 import re
 import functools
 
-try:
-    from urllib.parse import quote
-except ImportError:
-    # Python 2
-    from urllib import quote
+from urllib.parse import quote
 
 from . import url
 
